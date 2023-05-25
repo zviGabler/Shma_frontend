@@ -1,0 +1,30 @@
+.SignIn {
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    font-size: 30px;
+    background-color: rgb(11, 11, 128, 0.7);
+    color: white;
+    font-weight: bold;
+    margin: 0 auto;
+    padding: 7px 0;
+    width: 100%;
+}
+
+.subheader {
+    font-size: 25px;
+    background-color: rgb(11, 11, 128);
+    color: white;
+    margin: 0 auto;
+    padding: 7px auto;
+    width: 100%;
+}
+
+.sign-in-content {
+    display: flex;
+    flex-direction: column;
+    width: 600px;
+    margin: 20px auto;
+}

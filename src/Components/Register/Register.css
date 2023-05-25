@@ -1,0 +1,4 @@
+.account-message:hover {
+    cursor: pointer;
+    text-decoration-line: underline;
+}
