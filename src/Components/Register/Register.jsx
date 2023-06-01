@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import "./Register.css";
+import "../SignIn/SignIn.css";
 import SignInForm from "../SignInForm/SignInForm";
 
 function Register({ callbackFunc }) {
@@ -78,7 +79,11 @@ function Register({ callbackFunc }) {
   }, [ready, btnDisabled])
 
   return (
-    <div className="Register">
+    <div className="sign-in-content">
+    <div className="login-SMA">SMA - The newest Shared Messaging App!</div>
+    <div className="login-subheader">
+      Create a free account to send instant messages to your friends!
+    </div>
       <SignInForm formDetails={formDetails} btnDisabled={btnDisabled} />
       <div className="account-message" onClick={callbackFunc}>
         Already have an account? Click here to login!

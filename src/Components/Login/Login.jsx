@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import "./Login.css";
+import "../SignIn/SignIn.css";
 import SignInForm from "../SignInForm/SignInForm";
 
 function Login({ callbackFunc }) {
@@ -32,21 +33,24 @@ function Login({ callbackFunc }) {
   const formDetails = { formFields, submit, btn: "Login" };
 
   const ready = useCallback(() => {
-    return (
-        userName.length && password.length
-    )
+    return userName.length && password.length;
   }, [userName, password]);
 
   useEffect(() => {
     if (btnDisabled) {
-        ready() && setBtnDisabled(false)
+      ready() && setBtnDisabled(false);
     } else {
-        !ready() && setBtnDisabled(true)
+      !ready() && setBtnDisabled(true);
     }
-  }, [ready, btnDisabled])
+  }, [ready, btnDisabled]);
 
   return (
-    <div className="Login">
+    <div className="sign-in-content">
+      <div className="login-SMA">SMA - The newest Shared Messaging App!</div>
+      <div className="login-subheader">
+        Login here to access your messages and connect with your friends by
+        sending them messages!
+      </div>
       <SignInForm formDetails={formDetails} btnDisabled={btnDisabled} />
       <div className="account-message" onClick={callbackFunc}>
         Don't have an account yet? Click here to create a free account!

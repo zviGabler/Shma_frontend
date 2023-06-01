@@ -1,9 +1,7 @@
 .form {
-    border: solid 3px rgb(11, 11, 128, 0.7);
-    border-radius: 5px;
     display: flex;
     flex-direction: column;
-    width: 600px;
+    width: 95%;
     margin: 7px auto;
     padding: 10px 0;
 }
