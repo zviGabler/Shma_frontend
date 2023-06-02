@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
 import SignIn from "./Components/SignIn/SignIn";
-import { AuthProvider } from "./lib/contexts/AuthContext";
+import { AuthProvider } from "./lib/contexts/Auth/AuthContext";
 
 function App() {
   return (

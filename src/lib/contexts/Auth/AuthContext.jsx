@@ -1,33 +1,17 @@
+import { createContext, useEffect, useState } from "react";
 import axios from "axios";
+import { getToken, isTokenExpired } from "./utils";
+import Api from "../../api";
+import { API_URL, TOKEN_NAME } from "../../../constants/settings";
 
-import { useEffect, useState } from "react";
-import { TOKEN_NAME, API_URL } from "../../constants/settings";
-import Api from "../api";
+export const AuthContext = createContext({});
 
+const Provider = AuthContext.Provider;
 
-const parseJwt = (token) => {
-  const base64Url = token.split('.')[1];
-  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-  const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
-      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-  }).join(''));
-
-  return JSON.parse(jsonPayload);
-}
-
-const isTokenExpired = (token) => {
-  const tokenPayload = parseJwt(token);
-  const expiryDate = new Date(tokenPayload.exp * 1000);
-  const now = new Date();
-  return now.getTime() > expiryDate.getTime();
-};
-
-const getToken = () => localStorage.getItem(TOKEN_NAME);
-
-export default function useAuth() {
+export const AuthProvider = ({children}) => {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-
+  
   const axiosInstance = axios.create({
         baseURL: API_URL,
   });
@@ -74,18 +58,32 @@ export default function useAuth() {
   useEffect(() => {
     // some auth logic here on mount
 
+    // for now, just set user to the first user in the db
+    const initAuth = async () => {
+      const reponse = await api.getUserById(1);
+      setUser({...reponse.data.data, isLoggedIn: true})
+    }
+    initAuth()
+
     return () => {
       axiosInstance.interceptors.response.eject(responseInterceptor);
       axiosInstance.interceptors.request.eject(requestInterceptor);
   };
-  }, []);
+  }, [requestInterceptor, responseInterceptor]);
 
-  return {
+  const auth = {
     user,
     // signup,
     // login,
     // logout,
     api,
     isLoading
-  };
+  }
+
+  return (
+    <Provider value={auth}>
+      {children}
+    </Provider>
+  )
 }
+

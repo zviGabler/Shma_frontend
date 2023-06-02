@@ -7,6 +7,8 @@ export default class Api {
 
   logout = async () => await this.axios.post('/users/logout')
 
+  getUserById = async (id) => await this.axios.get(`/users/${id}`)
+  
   // signup =
 
   // getMessages...
