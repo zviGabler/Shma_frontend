@@ -62,6 +62,7 @@ export const AuthProvider = ({children}) => {
     const initAuth = async () => {
       const reponse = await api.getUserById(1);
       setUser({...reponse.data.data, isLoggedIn: true})
+      setIsLoading(false)
     }
     initAuth()
 
@@ -82,7 +83,7 @@ export const AuthProvider = ({children}) => {
 
   return (
     <Provider value={auth}>
-      {children}
+      {!isLoading && children}
     </Provider>
   )
 }
