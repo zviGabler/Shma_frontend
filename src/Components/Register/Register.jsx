@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import "./Register.css";
 import "../SignIn/SignIn.css";
 import SignInForm from "../SignInForm/SignInForm";
+import { API_URL, endpoints } from "../../constants/settings";
 
 function Register({ callbackFunc }) {
   const [firstName, setFirstName] = useState("");
@@ -10,6 +11,7 @@ function Register({ callbackFunc }) {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [btnDisabled, setBtnDisabled] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const formFields = [
     {
@@ -49,9 +51,44 @@ function Register({ callbackFunc }) {
     },
   ];
 
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault();
-    console.log("submit");
+    setErrorMessage("");
+    try {
+      const response = await fetch(
+        `${API_URL}${endpoints.users}${endpoints.signup}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userName,
+            password,
+            confirmPassword,
+            firstName,
+            lastName,
+          }),
+        }
+      );
+      const jsonResponse = await response.json();
+      if (response.status === 201) {
+        const user = jsonResponse.data;
+        console.log(user);
+        //jwt auth here and redirect from login page
+      } else if ([403, 409, 422].includes(response.status)) {
+        setErrorMessage(jsonResponse.message);
+      } else {
+        setErrorMessage(
+          "Something went wrong with logging in. Please try again."
+        );
+      }
+    } catch (error) {
+      console.log(error);
+      setErrorMessage(
+        "Something went wrong with logging in. Please try again."
+      );
+    }
   };
 
   const formDetails = {
@@ -62,29 +99,33 @@ function Register({ callbackFunc }) {
 
   const ready = useCallback(() => {
     return (
-        firstName.length &&
-        lastName.length &&
-        userName.length &&
-        password.length &&
-        confirmPassword.length
-    )
+      firstName.length &&
+      lastName.length &&
+      userName.length &&
+      password.length &&
+      confirmPassword.length
+    );
   }, [firstName, lastName, userName, password, confirmPassword]);
 
   useEffect(() => {
     if (btnDisabled) {
-        ready() && setBtnDisabled(false)
+      ready() && setBtnDisabled(false);
     } else {
-        !ready() && setBtnDisabled(true)
+      !ready() && setBtnDisabled(true);
     }
-  }, [ready, btnDisabled])
+  }, [ready, btnDisabled]);
 
   return (
     <div className="sign-in-content">
-    <div className="login-SMA">SMA - The newest Shared Messaging App!</div>
-    <div className="login-subheader">
-      Create a free account to send instant messages to your friends!
-    </div>
-      <SignInForm formDetails={formDetails} btnDisabled={btnDisabled} />
+      <div className="login-SMA">SMA - The newest Shared Messaging App!</div>
+      <div className="login-subheader">
+        Create a free account to send instant messages to your friends!
+      </div>
+      <SignInForm
+        formDetails={formDetails}
+        btnDisabled={btnDisabled}
+        errorMessage={errorMessage}
+      />
       <div className="account-message" onClick={callbackFunc}>
         Already have an account? Click here to login!
       </div>

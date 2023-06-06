@@ -1,6 +1,6 @@
 import "./SignInForm.css";
 
-function SignInForm({ formDetails, btnDisabled }) {
+function SignInForm({ formDetails, btnDisabled, errorMessage }) {
   const { formFields, submit } = formDetails;
 
   return (
@@ -16,6 +16,7 @@ function SignInForm({ formDetails, btnDisabled }) {
           />
         );
       })}
+      {(errorMessage && errorMessage.length) && <div className="error-message">{errorMessage}</div>}
       <button className={btnDisabled?"btn-disabled":""} disabled={btnDisabled} onClick={submit}>{formDetails.btn}</button>
     </form>
   );
