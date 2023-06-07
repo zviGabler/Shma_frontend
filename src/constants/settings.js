@@ -7,5 +7,7 @@ export const TOKEN_NAME = 'auth_token';
 export const endpoints = {
     users:"/users",
     login:"/login",
-    signup:"/signup"
+    signup:"/signup",
+    userDetails:"/user-details",
+    userById:"/user-by-id"
 }

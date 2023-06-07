@@ -1,0 +1,29 @@
+.user-card {
+    width: 200px;
+    height: 200px;
+    margin: 15px;
+    background-color: azure;
+    border: rgb(22, 22, 255) solid 3px;
+    border-radius: 10px;
+    color: rgb(22, 22, 255);
+    font-size: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.user-card > button {
+    margin: 0px auto;
+    background-color: rgb(22, 22, 255);
+    width: fit-content;
+    color: azure;
+    border-radius: 10px;
+    height: 35px;
+    font-size: 18px;
+    padding: 4px;
+    text-align: center;
+}
+
+.pending {
+    font-size: 18px;
+}

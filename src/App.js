@@ -3,6 +3,7 @@ import "./App.css";
 import SignIn from "./Components/SignIn/SignIn";
 import { AuthProvider } from "./lib/contexts/Auth/AuthContext";
 import { WsProvider } from "./lib/contexts/Ws/WsContext";
+import UserInfo from "./Components/UserInfo/UserInfo";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
             <div className="App">
               <Routes>
                 <Route path="/login" element={<SignIn />} />
+                <Route path="/user" element={<UserInfo />} />
               </Routes>
             </div>
           </WsProvider>
