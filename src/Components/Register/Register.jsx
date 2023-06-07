@@ -1,50 +1,50 @@
-import { useState, useEffect, useCallback } from "react";
-import "./Register.css";
-import "../SignIn/SignIn.css";
-import SignInForm from "../SignInForm/SignInForm";
-import { API_URL, endpoints } from "../../constants/settings";
+import { useState, useEffect, useCallback } from 'react';
+import './Register.css';
+import '../SignIn/SignIn.css';
+import SignInForm from '../SignInForm/SignInForm';
+import { API_URL, endpoints } from '../../constants/settings';
 
 function Register({ callbackFunc }) {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [userName, setUserName] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [userName, setUserName] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [btnDisabled, setBtnDisabled] = useState(true);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState('');
 
   const formFields = [
     {
-      type: "text",
-      placeholder: "First Name",
+      type: 'text',
+      placeholder: 'First Name',
       onChange: (e) => setFirstName(e.target.value),
       value: firstName,
       id: 1,
     },
     {
-      type: "text",
-      placeholder: "Last Name",
+      type: 'text',
+      placeholder: 'Last Name',
       onChange: (e) => setLastName(e.target.value),
       value: lastName,
       id: 2,
     },
     {
-      type: "text",
-      placeholder: "User Name",
+      type: 'text',
+      placeholder: 'User Name',
       onChange: (e) => setUserName(e.target.value),
       value: userName,
       id: 3,
     },
     {
-      type: "password",
-      placeholder: "Password",
+      type: 'password',
+      placeholder: 'Password',
       onChange: (e) => setPassword(e.target.value),
       value: password,
       id: 4,
     },
     {
-      type: "password",
-      placeholder: "Confirm Password",
+      type: 'password',
+      placeholder: 'Confirm Password',
       onChange: (e) => setConfirmPassword(e.target.value),
       value: confirmPassword,
       id: 5,
@@ -53,14 +53,14 @@ function Register({ callbackFunc }) {
 
   const submit = async (e) => {
     e.preventDefault();
-    setErrorMessage("");
+    setErrorMessage('');
     try {
       const response = await fetch(
         `${API_URL}${endpoints.users}${endpoints.signup}`,
         {
-          method: "POST",
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify({
             userName,
@@ -80,13 +80,13 @@ function Register({ callbackFunc }) {
         setErrorMessage(jsonResponse.message);
       } else {
         setErrorMessage(
-          "Something went wrong with logging in. Please try again."
+          'Something went wrong with logging in. Please try again.'
         );
       }
     } catch (error) {
       console.log(error);
       setErrorMessage(
-        "Something went wrong with logging in. Please try again."
+        'Something went wrong with logging in. Please try again.'
       );
     }
   };
@@ -94,7 +94,7 @@ function Register({ callbackFunc }) {
   const formDetails = {
     formFields,
     submit,
-    btn: "Sign Up!",
+    btn: 'Sign Up!',
   };
 
   const ready = useCallback(() => {
@@ -116,9 +116,9 @@ function Register({ callbackFunc }) {
   }, [ready, btnDisabled]);
 
   return (
-    <div className="sign-in-content">
-      <div className="login-SMA">SMA - The newest Shared Messaging App!</div>
-      <div className="login-subheader">
+    <div className='sign-in-content'>
+      <div className='login-SMA'>SMA - The newest Shared Messaging App!</div>
+      <div className='login-subheader'>
         Create a free account to send instant messages to your friends!
       </div>
       <SignInForm
@@ -126,7 +126,7 @@ function Register({ callbackFunc }) {
         btnDisabled={btnDisabled}
         errorMessage={errorMessage}
       />
-      <div className="account-message" onClick={callbackFunc}>
+      <div className='account-message' onClick={callbackFunc}>
         Already have an account? Click here to login!
       </div>
     </div>

@@ -1,26 +1,26 @@
-import { useCallback, useEffect, useState } from "react";
-import "./Login.css";
-import "../SignIn/SignIn.css";
-import SignInForm from "../SignInForm/SignInForm";
-import { API_URL, endpoints } from "../../constants/settings";
+import { useCallback, useEffect, useState } from 'react';
+import './Login.css';
+import '../SignIn/SignIn.css';
+import SignInForm from '../SignInForm/SignInForm';
+import { API_URL, endpoints } from '../../constants/settings';
 
 function Login({ callbackFunc }) {
-  const [userName, setUserName] = useState("");
-  const [password, setPassword] = useState("");
+  const [userName, setUserName] = useState('');
+  const [password, setPassword] = useState('');
   const [btnDisabled, setBtnDisabled] = useState(true);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState('');
 
   const formFields = [
     {
-      type: "text",
-      placeholder: "User Name",
+      type: 'text',
+      placeholder: 'User Name',
       onChange: (e) => setUserName(e.target.value),
       value: userName,
       id: 1,
     },
     {
-      type: "password",
-      placeholder: "Password",
+      type: 'password',
+      placeholder: 'Password',
       onChange: (e) => setPassword(e.target.value),
       value: password,
       id: 2,
@@ -29,14 +29,14 @@ function Login({ callbackFunc }) {
 
   const submit = async (e) => {
     e.preventDefault();
-    setErrorMessage("");
+    setErrorMessage('');
     try {
       const response = await fetch(
         `${API_URL}${endpoints.users}${endpoints.login}`,
         {
-          method: "POST",
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify({
             userName,
@@ -53,18 +53,18 @@ function Login({ callbackFunc }) {
         setErrorMessage(jsonResponse.message);
       } else {
         setErrorMessage(
-          "Something went wrong with logging in. Please try again."
+          'Something went wrong with logging in. Please try again.'
         );
       }
     } catch (error) {
       console.log(error);
       setErrorMessage(
-        "Something went wrong with logging in. Please try again."
+        'Something went wrong with logging in. Please try again.'
       );
     }
   };
 
-  const formDetails = { formFields, submit, btn: "Login" };
+  const formDetails = { formFields, submit, btn: 'Login' };
 
   const ready = useCallback(() => {
     return userName.length && password.length;
@@ -79,9 +79,9 @@ function Login({ callbackFunc }) {
   }, [ready, btnDisabled]);
 
   return (
-    <div className="sign-in-content">
-      <div className="login-SMA">SMA - The newest Shared Messaging App!</div>
-      <div className="login-subheader">
+    <div className='sign-in-content'>
+      <div className='login-SMA'>SMA - The newest Shared Messaging App!</div>
+      <div className='login-subheader'>
         Login here to access your messages and connect with your friends by
         sending them messages!
       </div>
@@ -90,7 +90,7 @@ function Login({ callbackFunc }) {
         btnDisabled={btnDisabled}
         errorMessage={errorMessage}
       />
-      <div className="account-message" onClick={callbackFunc}>
+      <div className='account-message' onClick={callbackFunc}>
         Don't have an account yet? Click here to create a free account!
       </div>
     </div>
