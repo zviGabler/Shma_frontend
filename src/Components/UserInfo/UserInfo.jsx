@@ -8,8 +8,8 @@ function UserInfo() {
   const [infoUserName, setInfoUserName] = useState("");
   const [infoFirstName, setInfoFirstName] = useState("");
   const [infoLastName, setInfoLastName] = useState("");
-  const [infoID, setInfoID] = useState(0);
-  const [friendsArr, setFriendsArr] = useState([]);
+  const [infoID, setInfoID] = useState();
+  const [friendsIds, setFriendsIds] = useState([]);
 
   const setDetails = useCallback(async () => {
     if (infoUserName && infoUserName.length) {
@@ -35,13 +35,13 @@ function UserInfo() {
   }, [infoUserName]);
 
   const setArrayOfFriends = useCallback(async () => {
-    
-    const dummyArr = [{id: 2, userName: 'Last', firstName: 'userNameNew0', lastName: 'First'},{id: 3, userName: 'userNameNew0', firstName: 'First', lastName: 'Last'},{id: 4, userName: 'userNameNew1', firstName: 'First', lastName: 'Last'},{id: 5, userName: 'Last', firstName: 'userNameNew0', lastName: 'First'},{id: 6, userName: 'userNameNew0', firstName: 'First', lastName: 'Last'},{id: 7, userName: 'userNameNew1', firstName: 'First', lastName: 'Last'},{id: 8, userName: 'Last', firstName: 'userNameNew0', lastName: 'First'},{id: 9, userName: 'userNameNew0', firstName: 'First', lastName: 'Last'},{id: 10, userName: 'userNameNew1', firstName: 'First', lastName: 'Last'}];
-
-
-    //make call to database and get IDs. Once have ID's return array of all users with those IDS.
-    setFriendsArr(dummyArr)
-    console.log(infoID);
+    const response = await fetch(
+      `${API_URL}${endpoints.friendships}${endpoints.friends}/${infoID}`
+    );
+    if (response.status === 200) {
+      const jsonResponse = await response.json();
+      setFriendsIds(jsonResponse.data);
+    }
   }, [infoID]);
 
   useEffect(() => {
@@ -69,7 +69,11 @@ function UserInfo() {
         <div className="friends-title">
           {infoFirstName} {infoLastName}'s Friends
         </div>
-        <DisplayUsers usersArr={friendsArr} />
+        {friendsIds && friendsIds.length ? (
+          <DisplayUsers idsArr={friendsIds} />
+        ) : (
+          <div className="no-friends">No friends to display</div>
+        )}
       </div>
     </div>
   );

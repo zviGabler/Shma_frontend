@@ -16,11 +16,17 @@
 .users-friends {
     width: calc(100% - 300px);
     background-color: rgb(120, 120, 120);
-    height: 100%;
+    height: inherit;
 }
 
 .friends-title {
     margin: 15px auto;
     font-size: 40px;
     color: azure;
+}
+
+.no-friends {
+    margin: 20px auto;
+    color: azure;
+    font-size: 25px;
 }

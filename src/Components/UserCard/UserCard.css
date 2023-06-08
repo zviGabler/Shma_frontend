@@ -27,3 +27,7 @@
 .pending {
     font-size: 18px;
 }
+
+.error-request-text {
+    font-size: 10px;
+}

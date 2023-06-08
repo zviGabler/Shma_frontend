@@ -9,5 +9,11 @@ export const endpoints = {
     login:"/login",
     signup:"/signup",
     userDetails:"/user-details",
-    userById:"/user-by-id"
+    userById:"/user-by-id",
+    usersByIds:"/users-by-ids",
+    friendships:"/friendships",
+    friends:"/friends",
+    checkFriendship:"/check-friendship",
+    request:"/friend-request",
+    confirm:"/confirm-friendship"
 }

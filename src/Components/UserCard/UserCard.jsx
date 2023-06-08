@@ -1,12 +1,29 @@
 import React, { useEffect, useState, useCallback } from "react";
-import './UserCard.css';
+import "./UserCard.css";
+import { API_URL, endpoints } from "../../constants/settings";
 
 function UserCard({ username, firstName, lastName, cardId }) {
-  const [friendshipStatus, setFriendshipStatus] = useState("accepted");
+  const [friendshipStatus, setFriendshipStatus] = useState("no");
+  const [isNotWorking, setIsNotWorking] = useState(false);
 
-  const sendFriendRequest = () => {
-    // send friend request through server
-    setFriendshipStatus("pending");
+  const dummyID = 1;
+
+  const sendFriendRequest = async () => {
+    if (cardId) {
+      // send need to change dummy id to userID
+      const response = await fetch(
+        `${API_URL}${endpoints.friendships}${endpoints.request}/${dummyID}/${cardId}`,
+        { method: "POST" }
+      );
+      if (response.status === 200) {
+        setFriendshipStatus("pending");
+      } else {
+        setIsNotWorking(true);
+        setTimeout(() => {
+          setIsNotWorking(false);
+        }, 10000);
+      }
+    }
   };
 
   const sendMessage = () => {
@@ -15,9 +32,16 @@ function UserCard({ username, firstName, lastName, cardId }) {
   };
 
   const changeFriendshipStatus = useCallback(async () => {
-    console.log("set friendship status");
-    console.log(cardId);
-    // check frienships table for friendship
+    const response = await fetch(`${API_URL}${endpoints.friendships}${endpoints.checkFriendship}/${dummyID}/${cardId}`);
+    if (response.status === 200) {
+      const jsonResponse = await response.json();
+      const friendshipDetails = jsonResponse.data;
+      if (friendshipDetails) {
+        setFriendshipStatus(friendshipDetails.status);
+      } else {
+        setFriendshipStatus("no");
+      }
+    }
   }, [cardId]);
 
   useEffect(() => {
@@ -30,9 +54,18 @@ function UserCard({ username, firstName, lastName, cardId }) {
       <div>
         {firstName} {lastName}
       </div>
-      {friendshipStatus==="no" && <button onClick={sendFriendRequest}>Send Friend Request</button>}
-      {friendshipStatus==="pending" && <div className="pending">Friend Request Pending</div>}
-      {friendshipStatus==="accepted" && <button onClick={sendMessage}>Send Message</button>}
+      {friendshipStatus === "no" && (
+        <button onClick={sendFriendRequest}>Send Friend Request</button>
+      )}
+      {friendshipStatus === "pending" && (
+        <div className="pending">Friend Request Pending</div>
+      )}
+      {friendshipStatus === "accepted" && (
+        <button onClick={sendMessage}>Send Message</button>
+      )}
+      {isNotWorking && (
+        <div className="error-request-test">Error sending friend request.</div>
+      )}
     </div>
   );
 }
