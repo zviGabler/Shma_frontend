@@ -1,8 +1,12 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useContext } from "react";
+import { useNavigate } from 'react-router-dom';
 import "./Register.css";
 import "../SignIn/SignIn.css";
 import SignInForm from "../SignInForm/SignInForm";
 import { API_URL, endpoints } from "../../constants/settings";
+import { setToken } from "../../lib/contexts/Auth/utils";
+import { AuthContext } from "../../lib/contexts/Auth/AuthContext";
+import { ROUTES } from "../../constants/routes";
 
 function Register({ callbackFunc }) {
   const [firstName, setFirstName] = useState("");
@@ -12,6 +16,8 @@ function Register({ callbackFunc }) {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [btnDisabled, setBtnDisabled] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
+  const { setUser } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const formFields = [
     {
@@ -75,7 +81,10 @@ function Register({ callbackFunc }) {
       if (response.status === 201) {
         const user = jsonResponse.data;
         console.log(user);
-        //jwt auth here and redirect from login page
+        setToken(user.token);
+        delete user.token;
+        setUser(user);
+        navigate(ROUTES.home);
       } else if ([403, 409, 422].includes(response.status)) {
         setErrorMessage(jsonResponse.message);
       } else {

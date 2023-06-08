@@ -1,14 +1,20 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import "./Login.css";
 import "../SignIn/SignIn.css";
 import SignInForm from "../SignInForm/SignInForm";
 import { API_URL, endpoints } from "../../constants/settings";
+import { AuthContext } from "../../lib/contexts/Auth/AuthContext";
+import { setToken } from "../../lib/contexts/Auth/utils";
+import { ROUTES } from "../../constants/routes";
 
 function Login({ callbackFunc }) {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [btnDisabled, setBtnDisabled] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
+  const { setUser } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const formFields = [
     {
@@ -48,6 +54,10 @@ function Login({ callbackFunc }) {
       if (response.status === 200) {
         const user = jsonResponse.data;
         console.log(user);
+        setToken(user.token);
+        delete user.token;
+        setUser(user);
+        navigate(ROUTES.home);
         //jwt auth here and redirect from login page
       } else if ([403, 422].includes(response.status)) {
         setErrorMessage(jsonResponse.message);

@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import axios from "axios";
-import { getToken, isTokenExpired } from "./utils";
+import { getToken, isTokenExpired, parseJwt } from "./utils";
 import Api from "../../api";
 import { API_URL, TOKEN_NAME } from "../../../constants/settings";
 
@@ -9,7 +9,7 @@ export const AuthContext = createContext({});
 const Provider = AuthContext.Provider;
 
 export const AuthProvider = ({children}) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState({isLoggedIn: false});
   const [isLoading, setIsLoading] = useState(true);
   
   const axiosInstance = axios.create({
@@ -51,6 +51,7 @@ export const AuthProvider = ({children}) => {
   // const signup...
 
   const logout = async () => {
+    console.log('logout')
     localStorage.removeItem(TOKEN_NAME)
     setUser({isLoggedIn: false})
   }  
@@ -60,9 +61,31 @@ export const AuthProvider = ({children}) => {
 
     // for now, just set user to the first user in the db
     const initAuth = async () => {
-      const reponse = await api.getUserById(1);
-      setUser({...reponse.data.data, isLoggedIn: true})
-      setIsLoading(false)
+      setIsLoading(true)
+      const token = getToken()
+      if (!token) {
+        setIsLoading(false)
+        return
+      }
+    
+      if (isTokenExpired(token)) {
+        logout()
+        setIsLoading(false)
+        return
+      }
+      
+      try {
+        const tokenPayload = parseJwt(token)
+        console.log('token', token)
+        const response = await api.getUserById(tokenPayload.id)
+        const user = response.data.data
+        console.log('user', user)
+        setUser({...user, isLoggedIn: true})
+      } catch (error) {
+        console.log('Error while getting user info', error)
+      } finally {
+        setIsLoading(false)
+      }
     }
     initAuth()
 
@@ -74,6 +97,7 @@ export const AuthProvider = ({children}) => {
 
   const auth = {
     user,
+    setUser,
     // signup,
     // login,
     // logout,
@@ -83,7 +107,7 @@ export const AuthProvider = ({children}) => {
 
   return (
     <Provider value={auth}>
-      {!isLoading && children}
+      {children}
     </Provider>
   )
 }
