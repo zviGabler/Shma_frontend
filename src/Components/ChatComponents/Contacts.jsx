@@ -60,17 +60,23 @@ export default function Contacts({ contacts, changeChat }) {
 }
 const Container = styled.div`
   display: grid;
-  grid-template-rows: 5% 80% 15%;
+  grid-template-rows: 10% 80% 10%;
   overflow: hidden;
+  height: 85vh;
   background-color: #080420;
+  justify-self: stretch;
   .brand {
     display: flex;
     align-items: center;
     gap: 1rem;
+
     margin: 1rem 0;
     margin-bottom: 1rem;
-    justify-content: space-evenly;
+    justify-content: center;
+
+    ${'' /* justify-content: start; */}
     img {
+      ${'' /* height: 1.5rem; */}
       height: 1.5rem;
     }
     h3 {
@@ -82,10 +88,15 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+    align-self: stretch;
     overflow: auto;
-    gap: 1rem;
-    margin-top: 1rem;
-    margin-bottom: auto;
+    ${'' /* margin: auto */}
+    ${'' /* gap: 1rem; */}
+    gap: 0.8rem;
+    ${
+      '' /* margin-top: 1rem;
+    margin-bottom: auto; */
+    }
     &::-webkit-scrollbar {
       width: 0.2rem;
       &-thumb {

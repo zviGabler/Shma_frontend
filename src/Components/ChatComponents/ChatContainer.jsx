@@ -6,7 +6,17 @@ import Robot from '../../assets/robot.gif';
 import { v4 as uuidv4 } from 'uuid';
 
 export default function ChatContainer({ currentChat, socket }) {
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState([
+    { fromSelf: false, message: 'hello' },
+    { fromSelf: true, message: 'hello' },
+    { fromSelf: false, message: 'How are you?' },
+    { fromSelf: true, message: 'Great! And how are you?' },
+    { fromSelf: false, message: 'How was pet adoption project?' },
+    {
+      fromSelf: true,
+      message: 'Not so easy',
+    },
+  ]);
   const scrollRef = useRef();
   const [arrivalMessage, setArrivalMessage] = useState(null);
 
@@ -62,8 +72,9 @@ export default function ChatContainer({ currentChat, socket }) {
 
 const Container = styled.div`
   display: grid;
-  grid-template-rows: 10% 70% 20%;
+  grid-template-rows: 10% 80% 10%;
   gap: 0.1rem;
+  height: 90vh;
   overflow: hidden;
   @media screen and (min-width: 720px) and (max-width: 1080px) {
     grid-template-rows: 15% 65% 20%;
@@ -121,13 +132,14 @@ const Container = styled.div`
     .sended {
       justify-content: flex-end;
       .content {
-        background-color: #4f04ff21;
+        ${'' /* background-color: #4f04ff21; */}
+        background-color: #31a377;
       }
     }
     .recieved {
       justify-content: flex-start;
       .content {
-        background-color: #9900ff20;
+        background-color: #722994;
       }
     }
   }

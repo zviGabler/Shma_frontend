@@ -20,6 +20,7 @@ export default function Chat() {
     { id: 4, username: 'testing4' },
     { id: 5, username: 'testing5' },
     { id: 6, username: 'testing6' },
+    { id: 7, username: 'user7' },
   ]);
   const [groups, setGroups] = useState([
     { id: 1, username: 'group1' },
@@ -111,12 +112,14 @@ const Container = styled.div`
   .friends-groups {
     grid-column-start: 0;
     grid-column-end: 2;
+    height: 95%;
   }
 
   .friends-header {
     display: flex;
     justify-content: space-around;
     padding: 0.5rem 0;
+    height: 5%;
   }
 
   .btn {
