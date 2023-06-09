@@ -57,8 +57,7 @@ function Login({ callbackFunc }) {
         setToken(user.token);
         delete user.token;
         setUser(user);
-        navigate(ROUTES.home);
-        //jwt auth here and redirect from login page
+        navigate(ROUTES.chat);
       } else if ([403, 422].includes(response.status)) {
         setErrorMessage(jsonResponse.message);
       } else {

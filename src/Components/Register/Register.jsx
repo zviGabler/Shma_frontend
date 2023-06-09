@@ -84,7 +84,7 @@ function Register({ callbackFunc }) {
         setToken(user.token);
         delete user.token;
         setUser(user);
-        navigate(ROUTES.home);
+        navigate(ROUTES.chat);
       } else if ([403, 409, 422].includes(response.status)) {
         setErrorMessage(jsonResponse.message);
       } else {
