@@ -31,6 +31,10 @@ export const WsProvider = ({children}) => {
       console.log('disconnected')
     }
 
+    const onError = (error) => {
+      console.log('socket_error', error)
+    }
+
     const onConnectError = (error) => {
       console.log('connect_error', error)
     }
@@ -39,16 +43,24 @@ export const WsProvider = ({children}) => {
       console.log('message', message)
     }
 
+    const onLoadChatHistory = (history) => {
+      console.log('history', history)
+    }
+
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
     socket.on('chat_message', onChatMessage);
+    socket.on('error', onError);
     socket.on('connect_error', onConnectError);
+    socket.on('load_chat_history', onLoadChatHistory);
 
     return () => {
       socket.off('connect', onConnect);
       socket.off('disconnect', onDisconnect);
       socket.off('chat_message', onChatMessage);
+      socket.off('error', onError);
       socket.off('connect_error', onConnectError);
+      socket.off('load_chat_history', onLoadChatHistory);
     };
   }, []);    
 
@@ -58,6 +70,7 @@ export const WsProvider = ({children}) => {
     if (user.isLoggedIn) {
       socket.auth = { userId: user.id, token: getToken(), connectionId };
       socket.connect();
+      socket.emit('load_chat_history');
     } else {
       socket.disconnect();
     }

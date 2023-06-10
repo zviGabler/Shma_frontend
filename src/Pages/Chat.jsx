@@ -26,6 +26,7 @@ export default function Chat() {
     { id: 29, username: 'leva' },
     { id: 33, username: 'shrek' },
     { id: 35, username: 'donkey' },
+    { id: 41, username: 'king' },
   ]);
   const [groups, setGroups] = useState([
     { id: 1, username: 'group1' },
