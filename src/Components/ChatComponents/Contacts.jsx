@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
 import Logo from '../../assets/logo.svg';
 import StarLogo from '../../assets/davidstar.png';
+import { AuthContext } from '../../lib/contexts/Auth/AuthContext';
 
 export default function Contacts({ contacts, changeChat }) {
-  const [currentUserName, setCurrentUserName] = useState('Jowwy'); //useState(undefined);
+  const { user } = useContext(AuthContext);
   const [currentUserImage, setCurrentUserImage] = useState(Logo);
   const [currentSelected, setCurrentSelected] = useState(contacts[1]); // useState(undefined);
 
@@ -12,7 +13,7 @@ export default function Contacts({ contacts, changeChat }) {
     setCurrentSelected(index);
     changeChat(contact);
   };
-  console.log('contacts', contacts);
+  // console.log('contacts', contacts);
   return (
     <>
       {currentUserImage && currentUserImage && (
@@ -50,7 +51,7 @@ export default function Contacts({ contacts, changeChat }) {
               <img src={StarLogo} alt='avatar' />
             </div>
             <div className='username'>
-              <h2>{currentUserName}</h2>
+              <h2>{user.userName}</h2>
             </div>
           </div>
         </Container>

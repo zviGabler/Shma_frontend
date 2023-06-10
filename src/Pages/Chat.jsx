@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useContext } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { io } from 'socket.io-client';
@@ -7,12 +7,14 @@ import ChatContainer from '../Components/ChatComponents/ChatContainer';
 import Contacts from '../Components/ChatComponents/Contacts';
 import Welcome from '../Components/ChatComponents/Welcome';
 import Groups from '../Components/ChatComponents/Groups';
+import { WsContext } from '../lib/contexts/Ws/WsContext';
 
 export default function Chat() {
-  const [selectFriends, setSelectFriends] = useState(true);
-  const [selectGroups, setSelectGroups] = useState(false);
+  // const [selectFriends, setSelectFriends] = useState(true);
+  // const [selectGroups, setSelectGroups] = useState(false);
+  const [selectedTab, setSelectedTab] = useState('friends');
   const navigate = useNavigate();
-  const socket = useRef();
+  const { socket } = useContext(WsContext);
   const [contacts, setContacts] = useState([
     { id: 1, username: 'testing1' },
     { id: 2, username: 'testing2' },
@@ -21,6 +23,9 @@ export default function Chat() {
     { id: 5, username: 'testing5' },
     { id: 6, username: 'testing6' },
     { id: 7, username: 'user7' },
+    { id: 29, username: 'leva' },
+    { id: 33, username: 'shrek' },
+    { id: 35, username: 'donkey' },
   ]);
   const [groups, setGroups] = useState([
     { id: 1, username: 'group1' },
@@ -39,20 +44,22 @@ export default function Chat() {
   });
 
   const handleSelectFriends = () => {
-    setSelectFriends(true);
-    setSelectGroups(false);
+    // setSelectFriends(true);
+    // setSelectGroups(false);
+    if (selectedTab !== 'friends') setSelectedTab('friends');
   };
 
   const handleSelectGroups = () => {
-    setSelectFriends(false);
-    setSelectGroups(true);
+    // setSelectFriends(false);
+    // setSelectGroups(true);
+    if (selectedTab !== 'groups') setSelectedTab('groups');
   };
 
   const handleChatChange = (chat) => {
     setCurrentChat(chat);
   };
-  console.log('contacts', contacts);
-  console.log('currentChat', currentChat);
+  // console.log('contacts', contacts);
+  // console.log('currentChat', currentChat);
   return (
     <>
       <Container>
@@ -67,7 +74,7 @@ export default function Chat() {
               </button>
             </div>
 
-            {selectFriends ? (
+            {selectedTab === 'friends' ? (
               <Contacts contacts={contacts} changeChat={handleChatChange} />
             ) : (
               <Groups groups={groups} changeChat={handleChatChange} />
@@ -79,7 +86,8 @@ export default function Chat() {
           ) : (
             <ChatContainer
               currentChat={currentChat}
-              // socket={socket}
+              socket={socket}
+              selectedTab={selectedTab}
             />
           )}
         </div>

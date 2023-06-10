@@ -19,8 +19,8 @@ export default function ChatInput({ handleSendMsg }) {
 
   const sendChat = (event) => {
     event.preventDefault();
-    if (msg.length > 0) {
-      handleSendMsg(msg);
+    if (msg.trim().length > 0) {
+      handleSendMsg(msg.trim());
       setMsg('');
     }
   };

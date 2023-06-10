@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import styled from 'styled-components';
 import ChatInput from './ChatInput';
 import Logout from './Logout';
 import Robot from '../../assets/robot.gif';
 import { v4 as uuidv4 } from 'uuid';
+import { AuthContext } from '../../lib/contexts/Auth/AuthContext';
 
-export default function ChatContainer({ currentChat, socket }) {
+export default function ChatContainer({ currentChat, socket, selectedTab }) {
   const [messages, setMessages] = useState([
     { fromSelf: false, message: 'hello' },
     { fromSelf: true, message: 'hello' },
@@ -19,19 +20,21 @@ export default function ChatContainer({ currentChat, socket }) {
   ]);
   const scrollRef = useRef();
   const [arrivalMessage, setArrivalMessage] = useState(null);
+  const { user } = useContext(AuthContext);
 
-  const handleSendMsg = async (msg) => {
-    const data = await JSON.parse(
-      localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
-    );
-    socket.current.emit('send-msg', {
-      to: currentChat._id,
-      from: data._id,
-      msg,
+  const handleSendMsg = async (message) => {
+    // const data = await JSON.parse(
+    //   localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
+    // );
+    socket.emit('chat_message', {
+      to: currentChat.id,
+      from: user.id,
+      type: selectedTab === 'friends' ? 'private' : 'group',
+      message,
     });
 
     const msgs = [...messages];
-    msgs.push({ fromSelf: true, message: msg });
+    msgs.push({ fromSelf: true, message });
     setMessages(msgs);
   };
 
