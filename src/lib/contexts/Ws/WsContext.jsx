@@ -43,11 +43,28 @@ export const WsProvider = ({children}) => {
     }
 
     const onChatMessage = (message) => {
-      console.log('message', message)
-    }
+      const { type, message: text, from, to } = message;
+      setChatsHistory((prev) => {
+        const history = {...prev};
 
-    const onLoadChatHistory = (history) => {
-      console.log('history', history)
+        let chat;
+        if (type === 'private') {
+          chat = from === user.id ? to : from;
+        } else if (type === 'group') {
+          chat = to;
+        }
+        if (!history[type][chat]) {
+          history[type][chat] = [];
+        }
+        history[type][chat].push({
+          fromSelf: from === user.id,
+          message: text,
+          type,
+          ...(type === 'group' && { from })
+        });
+
+        return history;
+      });
     }
 
     socket.on('connect', onConnect);
@@ -55,7 +72,6 @@ export const WsProvider = ({children}) => {
     socket.on('chat_message', onChatMessage);
     socket.on('error', onError);
     socket.on('connect_error', onConnectError);
-    socket.on('load_chat_history', onLoadChatHistory);
 
     return () => {
       socket.off('connect', onConnect);
@@ -63,20 +79,23 @@ export const WsProvider = ({children}) => {
       socket.off('chat_message', onChatMessage);
       socket.off('error', onError);
       socket.off('connect_error', onConnectError);
-      socket.off('load_chat_history', onLoadChatHistory);
     };
-  }, [user.isLoggedIn]);    
+  }, [user]);    
 
   useEffect(() => {
     const socket = socketRef.current;
 
     if (user.isLoggedIn) {
+      socket.disconnect();
       socket.auth = { userId: user.id, token: getToken(), connectionId };
       socket.connect();
     } else {
+      setChatsHistory({
+        private: {}, group: {}
+      });
       socket.disconnect();
     }
-  }, [user.isLoggedIn, user.id]);
+  }, [user]);
 
   useEffect(() => {
     const loadChatHistory = async () => {
@@ -88,7 +107,7 @@ export const WsProvider = ({children}) => {
       }
     }
     loadChatHistory();
-  }, [user.isLoggedIn, user.id]);
+  }, [user]);
 
   return (
     <Provider value={{

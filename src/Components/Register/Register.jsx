@@ -83,7 +83,7 @@ function Register({ callbackFunc }) {
         console.log(user);
         setToken(user.token);
         delete user.token;
-        setUser(user);
+        setUser({...user, isLoggedIn: true});
         navigate(ROUTES.chat);
       } else if ([403, 409, 422].includes(response.status)) {
         setErrorMessage(jsonResponse.message);

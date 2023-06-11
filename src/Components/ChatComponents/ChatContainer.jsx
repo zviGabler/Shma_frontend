@@ -5,6 +5,7 @@ import Logout from './Logout';
 import Robot from '../../assets/robot.gif';
 import { v4 as uuidv4 } from 'uuid';
 import { AuthContext } from '../../lib/contexts/Auth/AuthContext';
+import { WsContext } from '../../lib/contexts/Ws/WsContext';
 
 export default function ChatContainer({ currentChat, socket, selectedTab }) {
   const [messages, setMessages] = useState([
@@ -21,6 +22,7 @@ export default function ChatContainer({ currentChat, socket, selectedTab }) {
   const scrollRef = useRef();
   const [arrivalMessage, setArrivalMessage] = useState(null);
   const { user } = useContext(AuthContext);
+  const { setChatsHistory } = useContext(WsContext);
 
   const handleSendMsg = async (message) => {
     // const data = await JSON.parse(
@@ -36,6 +38,25 @@ export default function ChatContainer({ currentChat, socket, selectedTab }) {
     const msgs = [...messages];
     msgs.push({ fromSelf: true, message });
     setMessages(msgs);
+
+    setChatsHistory((prev) => {
+      const history = { ...prev };
+
+      let chat = currentChat.id;
+      const type = selectedTab === 'friends' ? 'private' : 'group';
+
+      if (!history[type][chat]) {
+        history[type][chat] = [];
+      }
+      history[type][chat].push({
+        fromSelf: true,
+        message,
+        type,
+        ...(type === 'group' && { from: currentChat.id })
+      });
+
+      return history;
+    });
   };
 
   return (

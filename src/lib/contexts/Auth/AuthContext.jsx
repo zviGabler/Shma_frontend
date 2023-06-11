@@ -76,7 +76,6 @@ export const AuthProvider = ({children}) => {
       
       try {
         const tokenPayload = parseJwt(token)
-        console.log('token', token)
         const response = await api.getUserById(tokenPayload.id)
         const user = response.data.data
         console.log('user', user)
