@@ -11,6 +11,7 @@ export const endpoints = {
     userDetails:"/user-details",
     userById:"/user-by-id",
     usersByIds:"/users-by-ids",
+    userChatHistory:"/chat-history",
     friendships:"/friendships",
     friends:"/friends",
     checkFriendship:"/check-friendship",

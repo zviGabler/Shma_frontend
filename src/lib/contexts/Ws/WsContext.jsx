@@ -11,13 +11,16 @@ const Provider = WsContext.Provider;
 
 export const WsProvider = ({children}) => {
   const auth = useContext(AuthContext);
-  const { user } = auth;
+  const { user, api } = auth;
   const socketRef = useRef(io(BASE_BACKEND_URL, {
     autoConnect: false,
   }));
   const [isConnected, setIsConnected] = useState(false);
   const connectionId = uuidv4();
-  
+  const [chatsHistory, setChatsHistory] = useState({
+    private: {}, group: {}
+  });
+
   useEffect(() => {
     const socket = socketRef.current;
 
@@ -62,7 +65,7 @@ export const WsProvider = ({children}) => {
       socket.off('connect_error', onConnectError);
       socket.off('load_chat_history', onLoadChatHistory);
     };
-  }, []);    
+  }, [user.isLoggedIn]);    
 
   useEffect(() => {
     const socket = socketRef.current;
@@ -70,16 +73,29 @@ export const WsProvider = ({children}) => {
     if (user.isLoggedIn) {
       socket.auth = { userId: user.id, token: getToken(), connectionId };
       socket.connect();
-      socket.emit('load_chat_history');
     } else {
       socket.disconnect();
     }
   }, [user.isLoggedIn, user.id]);
 
+  useEffect(() => {
+    const loadChatHistory = async () => {
+      try {
+        const response = await api.getUserChatHistory();
+        setChatsHistory(response.data.data);
+      } catch (error) {
+        console.log('error getting chat history', error)
+      }
+    }
+    loadChatHistory();
+  }, [user.isLoggedIn, user.id]);
+
   return (
     <Provider value={{
       socket: socketRef.current,
-      isConnected
+      isConnected,
+      chatsHistory, 
+      setChatsHistory
       }}>
       {children}
     </Provider>

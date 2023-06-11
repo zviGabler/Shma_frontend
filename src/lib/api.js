@@ -9,6 +9,8 @@ export default class Api {
 
   getUserById = async (id) => await this.axios.get(`${endpoints.users}${endpoints.userById}?id=${id}`)
   
+  getUserChatHistory = async () => await this.axios.get(`${endpoints.users}${endpoints.userChatHistory}`)
+
   // signup =
 
   // getMessages...
