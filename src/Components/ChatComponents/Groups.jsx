@@ -4,16 +4,22 @@ import Logo from '../../assets/logo.svg';
 import StarLogo from '../../assets/davidstar.png';
 import { AuthContext } from '../../lib/contexts/Auth/AuthContext';
 
-export default function Groups({ groups, changeChat }) {
+export default function Groups({ groups, changeChat,  setMessages, chatsHistory }) {
   const { user } = useContext(AuthContext);
   const [currentUserImage, setCurrentUserImage] = useState(Logo);
-  const [currentGroupSelected, setCurrentGroupSelected] = useState(groups[1]); // useState(undefined);
+  const [currentGroupSelected, setCurrentGroupSelected] =  useState(groups[0]);
 
   const changeCurrentChat = (index, group) => {
     setCurrentGroupSelected(index);
     changeChat(group);
+    if (chatsHistory.group[group.id] === undefined) {
+      setMessages([]);
+    } else {
+      setMessages(chatsHistory.group[group.id]);
+    }
+    
   };
-  console.log('group', groups);
+ 
   return (
     <>
       {currentUserImage && currentUserImage && (
@@ -36,7 +42,7 @@ export default function Groups({ groups, changeChat }) {
                     <img src={Logo} alt='' />
                   </div>
                   <div className='username'>
-                    <h3>{group.username}</h3>
+                    <h3>{group.name}</h3>
                   </div>
                 </div>
               );
@@ -84,10 +90,6 @@ const Container = styled.div`
     justify-self: stretch;
     overflow: auto;
     gap: 0.8rem;
-    ${
-      '' /* margin-top: 1rem;
-    margin-bottom: auto; */
-    }
     &::-webkit-scrollbar {
       width: 0.2rem;
       &-thumb {

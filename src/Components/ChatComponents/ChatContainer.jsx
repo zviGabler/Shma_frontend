@@ -7,27 +7,15 @@ import { v4 as uuidv4 } from 'uuid';
 import { AuthContext } from '../../lib/contexts/Auth/AuthContext';
 import { WsContext } from '../../lib/contexts/Ws/WsContext';
 
-export default function ChatContainer({ currentChat, socket, selectedTab }) {
-  const [messages, setMessages] = useState([
-    { fromSelf: false, message: 'hello' },
-    { fromSelf: true, message: 'hello' },
-    { fromSelf: false, message: 'How are you?' },
-    { fromSelf: true, message: 'Great! And how are you?' },
-    { fromSelf: false, message: 'How was pet adoption project?' },
-    {
-      fromSelf: true,
-      message: 'Not so easy',
-    },
-  ]);
+export default function ChatContainer({ currentChat, socket, selectedTab, messages, setMessages}) {
+  
   const scrollRef = useRef();
   const [arrivalMessage, setArrivalMessage] = useState(null);
   const { user } = useContext(AuthContext);
-  const { setChatsHistory } = useContext(WsContext);
+  const { setChatsHistory, chatsHistory } = useContext(WsContext);
 
   const handleSendMsg = async (message) => {
-    // const data = await JSON.parse(
-    //   localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
-    // );
+    
     socket.emit('chat_message', {
       to: currentChat.id,
       from: user.id,
@@ -58,7 +46,7 @@ export default function ChatContainer({ currentChat, socket, selectedTab }) {
       return history;
     });
   };
-
+  
   return (
     <Container>
       <div className='chat-header'>
@@ -67,7 +55,7 @@ export default function ChatContainer({ currentChat, socket, selectedTab }) {
             <img src={Robot} alt='' />
           </div>
           <div className='username'>
-            <h3>{currentChat.username}</h3>
+            <h3>{currentChat.username || currentChat.name}</h3>
           </div>
         </div>
         <Logout />
@@ -83,6 +71,8 @@ export default function ChatContainer({ currentChat, socket, selectedTab }) {
               >
                 <div className='content '>
                   <p>{message.message}</p>
+                  <span className='display-user'>{ !message.fromSelf ? (currentChat.username || chatsHistory.friends[message.from] )  
+                  : user.userName}</span>
                 </div>
               </div>
             </div>
@@ -144,7 +134,7 @@ const Container = styled.div`
       .content {
         max-width: 40%;
         overflow-wrap: break-word;
-        padding: 1rem;
+        padding: 0.5rem ;
         font-size: 1.1rem;
         border-radius: 1rem;
         color: #d1d1d1;
@@ -156,7 +146,6 @@ const Container = styled.div`
     .sended {
       justify-content: flex-end;
       .content {
-        ${'' /* background-color: #4f04ff21; */}
         background-color: #31a377;
       }
     }
@@ -165,6 +154,11 @@ const Container = styled.div`
       .content {
         background-color: #722994;
       }
+    }
+    .display-user {
+      position: relative;
+      top: -5rem;
+      color: pink;
     }
   }
 `;

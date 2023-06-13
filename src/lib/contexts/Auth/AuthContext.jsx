@@ -3,12 +3,14 @@ import axios from "axios";
 import { getToken, isTokenExpired, parseJwt } from "./utils";
 import Api from "../../api";
 import { API_URL, TOKEN_NAME } from "../../../constants/settings";
+import { useNavigate } from "react-router-dom";
 
 export const AuthContext = createContext({});
 
 const Provider = AuthContext.Provider;
 
 export const AuthProvider = ({children}) => {
+  const navigate = useNavigate();
   const [user, setUser] = useState({isLoggedIn: false});
   const [isLoading, setIsLoading] = useState(true);
   
@@ -54,6 +56,7 @@ export const AuthProvider = ({children}) => {
     console.log('logout')
     localStorage.removeItem(TOKEN_NAME)
     setUser({isLoggedIn: false})
+    navigate('/login')
   }  
 
   useEffect(() => {
@@ -97,6 +100,7 @@ export const AuthProvider = ({children}) => {
   const auth = {
     user,
     setUser,
+    logout,
     // signup,
     // login,
     // logout,

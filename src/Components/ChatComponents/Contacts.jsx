@@ -3,17 +3,24 @@ import styled from 'styled-components';
 import Logo from '../../assets/logo.svg';
 import StarLogo from '../../assets/davidstar.png';
 import { AuthContext } from '../../lib/contexts/Auth/AuthContext';
+import { WsContext } from '../../lib/contexts/Ws/WsContext';
 
-export default function Contacts({ contacts, changeChat }) {
+export default function Contacts({ contacts, changeChat, setMessages, chatsHistory }) {
   const { user } = useContext(AuthContext);
   const [currentUserImage, setCurrentUserImage] = useState(Logo);
-  const [currentSelected, setCurrentSelected] = useState(contacts[1]); // useState(undefined);
+  const [currentSelected, setCurrentSelected] = useState(); 
+
 
   const changeCurrentChat = (index, contact) => {
     setCurrentSelected(index);
     changeChat(contact);
+    if(chatsHistory.private[contact.id] === undefined){
+      setMessages([]);
+    } else {
+      setMessages(chatsHistory.private[contact.id]);
+    }
   };
-  // console.log('contacts', contacts);
+
   return (
     <>
       {currentUserImage && currentUserImage && (
@@ -21,7 +28,6 @@ export default function Contacts({ contacts, changeChat }) {
           <div className='brand'>
             <img
               src={StarLogo}
-              // src=''
               alt='logo'
             />
             <h3>Welcome to Shma</h3>
@@ -94,10 +100,7 @@ const Container = styled.div`
     ${'' /* margin: auto */}
     ${'' /* gap: 1rem; */}
     gap: 0.8rem;
-    ${
-      '' /* margin-top: 1rem;
-    margin-bottom: auto; */
-    }
+    
     &::-webkit-scrollbar {
       width: 0.2rem;
       &-thumb {

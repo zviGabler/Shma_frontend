@@ -1,10 +1,12 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useContext } from 'react';
 import { BiPowerOff } from 'react-icons/bi';
 import styled from 'styled-components';
+import { AuthContext } from '../../lib/contexts/Auth/AuthContext';
+
 export default function Logout() {
+  const {logout} = useContext(AuthContext); 
   return (
-    <Button>
+    <Button onClick={() => logout()}>
       <BiPowerOff />
     </Button>
   );

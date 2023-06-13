@@ -8,59 +8,58 @@ import Contacts from '../Components/ChatComponents/Contacts';
 import Welcome from '../Components/ChatComponents/Welcome';
 import Groups from '../Components/ChatComponents/Groups';
 import { WsContext } from '../lib/contexts/Ws/WsContext';
+import { AuthContext } from '../lib/contexts/Auth/AuthContext';
 
 export default function Chat() {
   // const [selectFriends, setSelectFriends] = useState(true);
   // const [selectGroups, setSelectGroups] = useState(false);
+  const {user} = useContext(AuthContext);
   const [selectedTab, setSelectedTab] = useState('friends');
   const navigate = useNavigate();
-  const { socket } = useContext(WsContext);
-  const [contacts, setContacts] = useState([
-    { id: 1, username: 'testing1' },
-    { id: 2, username: 'testing2' },
-    { id: 3, username: 'testing3' },
-    { id: 4, username: 'testing4' },
-    { id: 5, username: 'testing5' },
-    { id: 6, username: 'testing6' },
-    { id: 7, username: 'user7' },
-    { id: 29, username: 'leva' },
-    { id: 33, username: 'shrek' },
-    { id: 35, username: 'donkey' },
-    { id: 41, username: 'king' },
-  ]);
-  const [groups, setGroups] = useState([
-    { id: 1, username: 'group1' },
-    { id: 2, username: 'group2' },
-  ]);
-  // const [currentChat, setCurrentChat] = useState(undefined);
-  const [currentChat, setCurrentChat] = useState({
-    username: 'testing3',
-    avatarImage: 'https://i.imgur.com/6VBx3io.png',
-    id: 1,
-  });
-  // const [currentUser, setCurrentUser] = useState(undefined);
-  const [currentUser, setCurrentUser] = useState({
-    username: 'testing2',
-    id: 2,
-  });
+  const { socket, chatsHistory } = useContext(WsContext);
+  const [contacts, setContacts] = useState([]);
+
+    
+  const [groups, setGroups] = useState([]);
+ 
+  const [currentChat, setCurrentChat] = useState({});
+  
+  const [messages, setMessages] = useState([]);
+  
 
   const handleSelectFriends = () => {
-    // setSelectFriends(true);
-    // setSelectGroups(false);
     if (selectedTab !== 'friends') setSelectedTab('friends');
   };
 
   const handleSelectGroups = () => {
-    // setSelectFriends(false);
-    // setSelectGroups(true);
     if (selectedTab !== 'groups') setSelectedTab('groups');
   };
 
   const handleChatChange = (chat) => {
     setCurrentChat(chat);
   };
-  // console.log('contacts', contacts);
-  // console.log('currentChat', currentChat);
+  
+  useEffect(() => {
+    const userGroups = [];
+     if (Array.isArray(chatsHistory.userGroups) ) {
+      for (let i = 0; i < chatsHistory.userGroups.length; i++) {
+        userGroups.push({id:chatsHistory.userGroups[i].id, name: chatsHistory.userGroups[i].name});
+      } 
+        setGroups(userGroups);
+    }
+    
+  
+  }, [user.isLoggedIn]);
+  useEffect(() => {
+    const userContacts = [];
+    if (Array.isArray(chatsHistory.friends)  && chatsHistory.friends.length > 0) {
+      for (let i = 0; i < chatsHistory.friends.length; i++) {
+        userContacts.push({id:chatsHistory.friends[i].id, username: chatsHistory.friends[i].userName});
+      } 
+        setContacts(userContacts);
+    }
+  }, [user.isLoggedIn]);
+   
   return (
     <>
       <Container>
@@ -76,9 +75,17 @@ export default function Chat() {
             </div>
 
             {selectedTab === 'friends' ? (
-              <Contacts contacts={contacts} changeChat={handleChatChange} />
+              <Contacts contacts={contacts} 
+              changeChat={handleChatChange}
+              setMessages={setMessages} 
+              chatsHistory={chatsHistory} 
+              />
             ) : (
-              <Groups groups={groups} changeChat={handleChatChange} />
+              <Groups groups={groups} 
+              changeChat={handleChatChange} 
+              setMessages={setMessages}  
+              chatsHistory={chatsHistory}
+              />
             )}
           </div>
 
@@ -89,6 +96,8 @@ export default function Chat() {
               currentChat={currentChat}
               socket={socket}
               selectedTab={selectedTab}
+              messages={messages}
+              setMessages={setMessages}
             />
           )}
         </div>
@@ -96,6 +105,7 @@ export default function Chat() {
     </>
   );
 }
+
 
 const Container = styled.div`
   height: 100vh;
@@ -127,7 +137,6 @@ const Container = styled.div`
   .friends-header {
     display: flex;
     justify-content: space-around;
-    padding: 0.5rem 0;
     height: 5%;
   }
 
@@ -137,3 +146,4 @@ const Container = styled.div`
     border: none;
   }
 `;
+
