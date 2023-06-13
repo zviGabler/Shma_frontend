@@ -71,7 +71,7 @@ export default function ChatContainer({ currentChat, socket, selectedTab, messag
               >
                 <div className='content '>
                   <p>{message.message}</p>
-                  <span className='display-user'>{ !message.fromSelf ? (currentChat.username || chatsHistory.friends[message.from] )  
+                  <span className='display-user'>{ !message.fromSelf ? (currentChat.username || message.userName )  
                   : user.userName}</span>
                 </div>
               </div>
