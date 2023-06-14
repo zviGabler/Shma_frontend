@@ -1,18 +1,18 @@
 import React, { useEffect, useState, useCallback } from "react";
 import "./UserCard.css";
 import { API_URL, endpoints } from "../../constants/settings";
+import { getToken } from "../../lib/contexts/Auth/utils";
 
 function UserCard({ username, firstName, lastName, cardId }) {
   const [friendshipStatus, setFriendshipStatus] = useState("no");
   const [isNotWorking, setIsNotWorking] = useState(false);
 
-  const dummyID = 1;
+  const userID = getToken();
 
   const sendFriendRequest = async () => {
     if (cardId) {
-      // send need to change dummy id to userID
       const response = await fetch(
-        `${API_URL}${endpoints.friendships}${endpoints.request}/${dummyID}/${cardId}`,
+        `${API_URL}${endpoints.friendships}${endpoints.request}/${userID}/${cardId}`,
         { method: "POST" }
       );
       if (response.status === 200) {
@@ -32,7 +32,7 @@ function UserCard({ username, firstName, lastName, cardId }) {
   };
 
   const changeFriendshipStatus = useCallback(async () => {
-    const response = await fetch(`${API_URL}${endpoints.friendships}${endpoints.checkFriendship}/${dummyID}/${cardId}`);
+    const response = await fetch(`${API_URL}${endpoints.friendships}${endpoints.checkFriendship}/${userID}/${cardId}`);
     if (response.status === 200) {
       const jsonResponse = await response.json();
       const friendshipDetails = jsonResponse.data;
