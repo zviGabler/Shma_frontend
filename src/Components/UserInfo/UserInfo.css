@@ -7,7 +7,7 @@
 
 .user-info {
     width: 300px;
-    background-color: rgb(220, 220, 220);
+    background-color: #431324;
     border-right: 3px solid rgb(50, 50, 50);
     box-shadow: rgb(50, 50, 50);
     height: inherit;
@@ -15,7 +15,7 @@
 
 .users-friends {
     width: calc(100% - 300px);
-    background-color: rgb(120, 120, 120);
+    background-color: #080420;
     height: inherit;
 }
 
