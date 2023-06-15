@@ -61,6 +61,7 @@ function UserInfo() {
             firstName={infoFirstName}
             lastName={infoLastName}
             cardId={infoID}
+            view={false}
           />
         )}
       </div>

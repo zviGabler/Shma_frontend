@@ -1,13 +1,20 @@
 import React, { useEffect, useState, useCallback, useContext } from "react";
 import "./UserCard.css";
 import { AuthContext } from "../../lib/contexts/Auth/AuthContext";
+import { useNavigate } from "react-router";
 
-function UserCard({ username, firstName, lastName, cardId }) {
+function UserCard({ username, firstName, lastName, cardId, view=true }) {
   const [friendshipStatus, setFriendshipStatus] = useState("no");
   const [isNotWorking, setIsNotWorking] = useState(false);
   const { user } = useContext(AuthContext);
   const [userID, setUserID] = useState(0);
   const { api } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handleView = () => {
+    navigate(`../user?user-name=${username}`);
+    window.location.reload();
+  }
 
   const sendFriendRequest = async () => {
     if (cardId) {
@@ -76,6 +83,8 @@ function UserCard({ username, firstName, lastName, cardId }) {
       {isNotWorking && (
         <div className="error-request-test">Error sending friend request.</div>
       )}
+      {(view && friendshipStatus!=="It's me!") && 
+      <button onClick={handleView}>View</button>}
     </div>
   );
 }
