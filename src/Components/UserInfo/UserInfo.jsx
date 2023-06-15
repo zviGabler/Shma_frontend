@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { API_URL, endpoints } from "../../constants/settings";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import "./UserInfo.css";
 import UserCard from "../UserCard/UserCard";
 import DisplayUsers from "../DisplayUsers/DisplayUsers";
+import { AuthContext } from "../../lib/contexts/Auth/AuthContext";
 
 function UserInfo() {
   const [infoUserName, setInfoUserName] = useState("");
@@ -10,39 +10,36 @@ function UserInfo() {
   const [infoLastName, setInfoLastName] = useState("");
   const [infoID, setInfoID] = useState();
   const [friendsIds, setFriendsIds] = useState([]);
+  const { api } = useContext(AuthContext);
 
   const setDetails = useCallback(async () => {
     if (infoUserName && infoUserName.length) {
       try {
-        const response = await fetch(
-          `${API_URL}${endpoints.users}${endpoints.userDetails}?userName=${infoUserName}`
-        );
 
-        const jsonResponse = await response.json();
+        const response = await api.getUserByUserName(infoUserName);
 
         if (response.status === 200) {
-          const { firstName, lastName, id } = jsonResponse.data[0];
+          const { firstName, lastName, id } = response.data.data;
           setInfoFirstName(firstName);
           setInfoLastName(lastName);
           setInfoID(id);
         } else {
-          console.log(jsonResponse.message);
+          console.log(response.data.message);
         }
       } catch {
         console.log("User details not yet available");
       }
     }
-  }, [infoUserName]);
+  }, [infoUserName, api]);
 
   const setArrayOfFriends = useCallback(async () => {
-    const response = await fetch(
-      `${API_URL}${endpoints.friendships}${endpoints.friends}/${infoID}`
-    );
-    if (response.status === 200) {
-      const jsonResponse = await response.json();
-      setFriendsIds(jsonResponse.data);
+    if (infoID) {
+      const response = await api.getFriendsIds(infoID);
+      if (response.status === 200) {
+        setFriendsIds(response.data.data);
+      }
     }
-  }, [infoID]);
+  }, [infoID, api]);
 
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
@@ -58,12 +55,14 @@ function UserInfo() {
   return (
     <div className="user-info-page">
       <div className="user-info">
-        <UserCard
-          username={infoUserName}
-          firstName={infoFirstName}
-          lastName={infoLastName}
-          cardId={infoID}
-        />
+        {infoID && (
+          <UserCard
+            username={infoUserName}
+            firstName={infoFirstName}
+            lastName={infoLastName}
+            cardId={infoID}
+          />
+        )}
       </div>
       <div className="users-friends">
         <div className="friends-title">

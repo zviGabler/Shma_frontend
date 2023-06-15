@@ -1,37 +1,27 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import "./DisplayUsers.css";
 import UserCard from "../UserCard/UserCard";
-import { API_URL, endpoints } from "../../constants/settings";
+import { AuthContext } from "../../lib/contexts/Auth/AuthContext";
 
 function DisplayUsers({ idsArr }) {
   const [usersArr, setUsersArr] = useState([]);
+  const { api } = useContext(AuthContext);
 
   const updateUsersArr = useCallback(async () => {
     if (idsArr && idsArr.length) {
       try {
-        const response = await fetch(
-          `${API_URL}${endpoints.users}${endpoints.usersByIds}`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              ids: idsArr,
-            }),
-          }
-        );
-        const jsonResponse = await response.json();
+        const response = await api.usersFromIds(idsArr);
+
         if (response.status === 200) {
-          setUsersArr(jsonResponse.data);
+          setUsersArr(response.data.data);
         } else {
-          console.log(jsonResponse.message);
+          console.log(response.data.message);
         }
       } catch (error) {
         console.log(error);
       }
     }
-  }, [idsArr]);
+  }, [idsArr, api]);
 
   useEffect(() => {
     updateUsersArr();
@@ -39,20 +29,20 @@ function DisplayUsers({ idsArr }) {
 
   return (
     <div className="display-users">
-      {usersArr &&
-        usersArr.length &&
+      {(usersArr &&
+        usersArr.length) ?
         usersArr.map((user) => {
           const { userName, firstName, lastName, id } = user;
           return (
             <UserCard
-              userName={userName}
+              username={userName}
               firstName={firstName}
               lastName={lastName}
               cardId={id}
               key={Number(id)}
             />
           );
-        })}
+        }): ""}
     </div>
   );
 }

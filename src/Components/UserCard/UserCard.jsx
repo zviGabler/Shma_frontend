@@ -1,20 +1,19 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useContext } from "react";
 import "./UserCard.css";
-import { API_URL, endpoints } from "../../constants/settings";
-import { getToken } from "../../lib/contexts/Auth/utils";
+import { AuthContext } from "../../lib/contexts/Auth/AuthContext";
 
 function UserCard({ username, firstName, lastName, cardId }) {
   const [friendshipStatus, setFriendshipStatus] = useState("no");
   const [isNotWorking, setIsNotWorking] = useState(false);
-
-  const userID = getToken();
+  const { user } = useContext(AuthContext);
+  const [userID, setUserID] = useState(0);
+  const { api } = useContext(AuthContext);
 
   const sendFriendRequest = async () => {
     if (cardId) {
-      const response = await fetch(
-        `${API_URL}${endpoints.friendships}${endpoints.request}/${userID}/${cardId}`,
-        { method: "POST" }
-      );
+
+      const response = await api.friendRequest(userID, cardId);
+      
       if (response.status === 200) {
         setFriendshipStatus("pending");
       } else {
@@ -32,21 +31,32 @@ function UserCard({ username, firstName, lastName, cardId }) {
   };
 
   const changeFriendshipStatus = useCallback(async () => {
-    const response = await fetch(`${API_URL}${endpoints.friendships}${endpoints.checkFriendship}/${userID}/${cardId}`);
-    if (response.status === 200) {
-      const jsonResponse = await response.json();
-      const friendshipDetails = jsonResponse.data;
-      if (friendshipDetails) {
-        setFriendshipStatus(friendshipDetails.status);
-      } else {
-        setFriendshipStatus("no");
+    if (cardId && userID !== 0) {
+      if (cardId === userID) {
+        setFriendshipStatus("It's me!")
+        return
+      }
+
+      const response = await api.checkFriendship(userID, cardId);
+
+      if (response.status === 200) {
+        const friendshipDetails = response.data.data;
+        if (friendshipDetails) {
+          setFriendshipStatus(friendshipDetails.status);
+        } else {
+          setFriendshipStatus("no");
+        }
       }
     }
-  }, [cardId]);
+  }, [cardId, userID, api]);
 
   useEffect(() => {
     changeFriendshipStatus();
   }, [changeFriendshipStatus]);
+
+  useEffect(() => {
+    setUserID(user.id);
+  }, [user]);
 
   return (
     <div className="user-card">
