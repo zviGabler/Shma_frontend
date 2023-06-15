@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
 import Logo from '../../assets/logo.svg';
 import StarLogo from '../../assets/davidstar.png';
@@ -9,7 +9,7 @@ export default function Contacts({ contacts, changeChat, setMessages, chatsHisto
   const { user } = useContext(AuthContext);
   const [currentUserImage, setCurrentUserImage] = useState(Logo);
   const [currentSelected, setCurrentSelected] = useState(); 
-
+  const { isChatHistoryLoaded } = useContext(WsContext);
 
   const changeCurrentChat = (index, contact) => {
     setCurrentSelected(index);
@@ -33,32 +33,36 @@ export default function Contacts({ contacts, changeChat, setMessages, chatsHisto
             <h3>Welcome to Shma</h3>
           </div>
           <div className='contacts'>
-            {contacts.map((contact, index) => {
-              return (
-                <div
-                  key={contact.id}
-                  className={`contact ${
-                    index === currentSelected ? 'selected' : ''
-                  }`}
-                  onClick={() => changeCurrentChat(index, contact)}
-                >
-                  <div className='avatar'>
-                    <img src={Logo} alt='' />
+            {isChatHistoryLoaded && <>
+              {contacts.map((contact, index) => {
+                return (
+                  <div
+                    key={contact.id}
+                    className={`contact ${
+                      index === currentSelected ? 'selected' : ''
+                    }`}
+                    onClick={() => changeCurrentChat(index, contact)}
+                  >
+                    <div className='avatar'>
+                      <img src={Logo} alt='' />
+                    </div>
+                    <div className='username'>
+                      <h3>{contact.username}</h3>
+                    </div>
                   </div>
-                  <div className='username'>
-                    <h3>{contact.username}</h3>
-                  </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </>}
           </div>
           <div className='current-user'>
-            <div className='avatar'>
-              <img src={StarLogo} alt='avatar' />
-            </div>
-            <div className='username'>
-              <h2>{user.userName}</h2>
-            </div>
+            {isChatHistoryLoaded && <>
+              <div className='avatar'>
+                <img src={StarLogo} alt='avatar' />
+              </div>
+              <div className='username'>
+                <h2>{user.userName}</h2>
+              </div>
+            </>}
           </div>
         </Container>
       )}

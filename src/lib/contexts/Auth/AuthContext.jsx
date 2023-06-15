@@ -24,6 +24,7 @@ export const AuthProvider = ({children}) => {
         if (token) {
             if (isTokenExpired(token) && user.isLoggedIn) {
                 logout()
+                navigate('/login')
             }
             config.headers.Authorization = `Bearer ${token}`
         }
@@ -41,6 +42,7 @@ export const AuthProvider = ({children}) => {
       error => {
         if (error.response.status === 401 && user.isLoggedIn) {
             logout();
+            navigate('/login')
         }
         return Promise.reject(error);
       }
@@ -56,7 +58,6 @@ export const AuthProvider = ({children}) => {
     console.log('logout')
     localStorage.removeItem(TOKEN_NAME)
     setUser({isLoggedIn: false})
-    navigate('/login')
   }  
 
   useEffect(() => {
@@ -73,6 +74,7 @@ export const AuthProvider = ({children}) => {
     
       if (isTokenExpired(token)) {
         logout()
+        navigate('/login')
         setIsLoading(false)
         return
       }
