@@ -3,11 +3,13 @@ import styled from 'styled-components';
 import Logo from '../../assets/logo.svg';
 import StarLogo from '../../assets/davidstar.png';
 import { AuthContext } from '../../lib/contexts/Auth/AuthContext';
+import { WsContext } from '../../lib/contexts/Ws/WsContext';
 
 export default function Groups({ groups, changeChat,  setMessages, chatsHistory }) {
   const { user } = useContext(AuthContext);
   const [currentUserImage, setCurrentUserImage] = useState(Logo);
   const [currentGroupSelected, setCurrentGroupSelected] =  useState(groups[0]);
+  const { isChatHistoryLoaded } = useContext(WsContext);
 
   const changeCurrentChat = (index, group) => {
     setCurrentGroupSelected(index);
@@ -29,24 +31,26 @@ export default function Groups({ groups, changeChat,  setMessages, chatsHistory 
             <h3>Welcome to Shma</h3>
           </div>
           <div className='contacts'>
-            {groups.map((group, index) => {
-              return (
-                <div
-                  key={group.id}
-                  className={`contact ${
-                    index === currentGroupSelected ? 'selected' : ''
-                  }`}
-                  onClick={() => changeCurrentChat(index, group)}
-                >
-                  <div className='avatar'>
-                    <img src={Logo} alt='' />
+            {isChatHistoryLoaded && <>
+              {groups.map((group, index) => {
+                return (
+                  <div
+                    key={group.id}
+                    className={`contact ${
+                      index === currentGroupSelected ? 'selected' : ''
+                    }`}
+                    onClick={() => changeCurrentChat(index, group)}
+                  >
+                    <div className='avatar'>
+                      <img src={Logo} alt='' />
+                    </div>
+                    <div className='username'>
+                      <h3>{group.name}</h3>
+                    </div>
                   </div>
-                  <div className='username'>
-                    <h3>{group.name}</h3>
-                  </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </>}
           </div>
           <div className='current-user'>
             <div className='avatar'>

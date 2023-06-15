@@ -17,9 +17,11 @@ export const WsProvider = ({children}) => {
   }));
   const [isConnected, setIsConnected] = useState(false);
   const connectionId = uuidv4();
+  
   const [chatsHistory, setChatsHistory] = useState({
     private: {}, group: {}
   });
+  const [isChatHistoryLoaded, setIsChatHistoryLoaded] = useState(false);
 
   useEffect(() => {
     const socket = socketRef.current;
@@ -87,12 +89,14 @@ export const WsProvider = ({children}) => {
 
     if (user.isLoggedIn) {
       socket.disconnect();
+      setIsChatHistoryLoaded(false);
       socket.auth = { userId: user.id, token: getToken(), connectionId };
       socket.connect();
     } else {
       setChatsHistory({
         private: {}, group: {}
       });
+      setIsChatHistoryLoaded(false);
       socket.disconnect();
     }
   }, [user]);
@@ -102,19 +106,21 @@ export const WsProvider = ({children}) => {
       try {
         const response = await api.getUserChatHistory();
         setChatsHistory(response.data.data);
+        setIsChatHistoryLoaded(true);
       } catch (error) {
         console.log('error getting chat history', error)
       }
     }
-    loadChatHistory();
-  }, [user]);
+    if (user.isLoggedIn) loadChatHistory();
+  }, [user.id]);
 
   return (
     <Provider value={{
       socket: socketRef.current,
       isConnected,
       chatsHistory, 
-      setChatsHistory
+      setChatsHistory,
+      isChatHistoryLoaded
       }}>
       {children}
     </Provider>

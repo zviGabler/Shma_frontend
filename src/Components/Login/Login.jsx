@@ -13,7 +13,7 @@ function Login({ callbackFunc }) {
   const [password, setPassword] = useState("");
   const [btnDisabled, setBtnDisabled] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
-  const { setUser } = useContext(AuthContext);
+  const { setUser, logout } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const formFields = [
@@ -35,6 +35,7 @@ function Login({ callbackFunc }) {
 
   const submit = async (e) => {
     e.preventDefault();
+    logout()
     setErrorMessage("");
     try {
       const response = await fetch(

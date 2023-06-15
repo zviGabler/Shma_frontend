@@ -1,7 +1,5 @@
 import React, { useEffect, useState, useRef, useContext } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { io } from 'socket.io-client';
 import styled from 'styled-components';
 import ChatContainer from '../Components/ChatComponents/ChatContainer';
 import Contacts from '../Components/ChatComponents/Contacts';
@@ -11,8 +9,6 @@ import { WsContext } from '../lib/contexts/Ws/WsContext';
 import { AuthContext } from '../lib/contexts/Auth/AuthContext';
 
 export default function Chat() {
-  // const [selectFriends, setSelectFriends] = useState(true);
-  // const [selectGroups, setSelectGroups] = useState(false);
   const {user} = useContext(AuthContext);
   const [selectedTab, setSelectedTab] = useState('friends');
   const navigate = useNavigate();
@@ -47,19 +43,18 @@ export default function Chat() {
       } 
         setGroups(userGroups);
     }
-    
-  
-  }, [user.isLoggedIn]);
+  }, [user.id, chatsHistory.userGroups]);
+
   useEffect(() => {
     const userContacts = [];
-    if (Array.isArray(chatsHistory.friends)  && chatsHistory.friends.length > 0) {
+    if (Array.isArray(chatsHistory.friends) && chatsHistory.friends.length > 0) {
       for (let i = 0; i < chatsHistory.friends.length; i++) {
         userContacts.push({id:chatsHistory.friends[i].id, username: chatsHistory.friends[i].userName});
       } 
         setContacts(userContacts);
     }
-  }, [user.isLoggedIn]);
-   
+  }, [user.id, chatsHistory.friends]);
+
   return (
     <>
       <Container>
@@ -74,19 +69,19 @@ export default function Chat() {
               </button>
             </div>
 
-            {selectedTab === 'friends' ? (
-              <Contacts contacts={contacts} 
-              changeChat={handleChatChange}
-              setMessages={setMessages} 
-              chatsHistory={chatsHistory} 
-              />
-            ) : (
-              <Groups groups={groups} 
-              changeChat={handleChatChange} 
-              setMessages={setMessages}  
-              chatsHistory={chatsHistory}
-              />
-            )}
+              {selectedTab === 'friends' ? (
+                <Contacts contacts={contacts} 
+                changeChat={handleChatChange}
+                setMessages={setMessages} 
+                chatsHistory={chatsHistory} 
+                />
+              ) : (
+                <Groups groups={groups} 
+                changeChat={handleChatChange} 
+                setMessages={setMessages}  
+                chatsHistory={chatsHistory}
+                />
+              )}
           </div>
 
           {currentChat === undefined ? (
