@@ -61,10 +61,10 @@ export default function Chat() {
         <div className='container'>
           <div className='friends-groups'>
             <div className='friends-header'>
-              <button className='btn' onClick={handleSelectFriends}>
+              <button className={selectedTab === 'friends' ? 'active btn' : 'btn'} onClick={handleSelectFriends}>
                 Friends
               </button>
-              <button className='btn' onClick={handleSelectGroups}>
+              <button className={selectedTab === 'groups' ? 'active btn' : 'btn'} onClick={handleSelectGroups}>
                 Groups
               </button>
             </div>
@@ -76,7 +76,7 @@ export default function Chat() {
                 chatsHistory={chatsHistory} 
                 />
               ) : (
-                <Groups groups={groups} 
+            <Groups groups={groups} 
                 changeChat={handleChatChange} 
                 setMessages={setMessages}  
                 chatsHistory={chatsHistory}
@@ -137,8 +137,12 @@ const Container = styled.div`
 
   .btn {
     background-color: #431324;
-    color: #4ff;
+    color:#fff;
     border: none;
+  }
+
+  .active {
+    background-color: #9a86f3;
   }
 `;
 

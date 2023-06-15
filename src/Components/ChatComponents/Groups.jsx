@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
-import Logo from '../../assets/logo.svg';
+import Logo from '../../assets/itc.png';
 import StarLogo from '../../assets/davidstar.png';
 import { AuthContext } from '../../lib/contexts/Auth/AuthContext';
 import { WsContext } from '../../lib/contexts/Ws/WsContext';
@@ -67,7 +67,7 @@ export default function Groups({ groups, changeChat,  setMessages, chatsHistory 
 }
 const Container = styled.div`
   display: grid;
-  grid-template-rows: 10% 80% 10%;
+  grid-template-rows: 15% 70% 15%;
   overflow: hidden;
   height: 85vh;
   justify-self: stretch;
@@ -93,7 +93,7 @@ const Container = styled.div`
     align-items: center;
     justify-self: stretch;
     overflow: auto;
-    gap: 0.8rem;
+    gap: 0.5rem;
     &::-webkit-scrollbar {
       width: 0.2rem;
       &-thumb {
@@ -108,7 +108,7 @@ const Container = styled.div`
       cursor: pointer;
       width: 90%;
       border-radius: 0.2rem;
-      padding: 0.2rem;
+      padding: 0 2px;
       display: flex;
       gap: 1rem;
       align-items: center;
