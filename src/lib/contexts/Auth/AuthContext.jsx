@@ -4,6 +4,7 @@ import { getToken, isTokenExpired, parseJwt } from "./utils";
 import Api from "../../api";
 import { API_URL, TOKEN_NAME } from "../../../constants/settings";
 import { useNavigate } from "react-router-dom";
+import { ROUTES } from "../../../constants/routes";
 
 export const AuthContext = createContext({});
 
@@ -93,8 +94,8 @@ export const AuthProvider = ({children}) => {
   }, [requestInterceptor, responseInterceptor]);
 
   useEffect(() => {
-    if (!user.isLoggedIn) {
-      navigate('/login')
+    if (!isLoading && !user.isLoggedIn) {
+      navigate(ROUTES.login)
     }
   }, [user, navigate])
 

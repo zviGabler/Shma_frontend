@@ -49,6 +49,7 @@ export default function Chat() {
     const userContacts = [];
     if (Array.isArray(chatsHistory.friends) && chatsHistory.friends.length > 0) {
       for (let i = 0; i < chatsHistory.friends.length; i++) {
+        if (chatsHistory.friends[i].status !== 'accepted') continue;
         userContacts.push({id:chatsHistory.friends[i].id, username: chatsHistory.friends[i].userName});
       } 
         setContacts(userContacts);
