@@ -3,23 +3,31 @@ import styled from 'styled-components';
 import { FaUserFriends } from 'react-icons/fa';
 import { WsContext } from '../../lib/contexts/Ws/WsContext';
 import FriendRequestModal from './FriendRequestModal';
+import { AuthContext } from '../../lib/contexts/Auth/AuthContext';
 
 export default function FriendRequests() {
-  const [isModalOpened, setIsModalOpened] = useState(true);
+  const [isModalOpened, setIsModalOpened] = useState(false);
+  const { user } = useContext(AuthContext);
   const { chatsHistory, isChatHistoryLoaded } = useContext(WsContext);
   const [pendingRequests, setPendingRequests] = useState([]);
+  const [incomingRequestsNumber, setIncomingRequestsNumber] = useState(0);
+  console.log('chatsHistory', chatsHistory);
 
   useEffect(() => {
     if (isChatHistoryLoaded) {
-      setPendingRequests(chatsHistory.friends.filter((friend) => friend.status === 'pending'));
+      setPendingRequests(chatsHistory.friends.filter(friend => friend.status === 'pending'));
     }
   }, [isChatHistoryLoaded, chatsHistory.friends]);
+
+  useEffect(() => {
+    setIncomingRequestsNumber(pendingRequests.filter(friend => friend.fromId !== user.id).length)
+  }, [pendingRequests]);
 
   return (
     <>
     {isChatHistoryLoaded && <>
       <Button onClick={() => setIsModalOpened(true)}>
-        {pendingRequests.length > 0 && <Circle>{pendingRequests.length}</Circle>}
+        {incomingRequestsNumber > 0 && <Circle>{incomingRequestsNumber}</Circle>}
         <FaUserFriends />
       </Button>
       {isModalOpened && <FriendRequestModal {...{setIsModalOpened, pendingRequests, setPendingRequests}} />}

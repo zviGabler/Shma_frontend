@@ -69,9 +69,26 @@ export const WsProvider = ({children}) => {
       });
     }
 
+    const onChangeFriendRequestStatus = (data) => {
+      const { from, to, status } = data;
+      const id = from === user.id ? to : from;
+      
+      setChatsHistory((prev) => {
+        const history = {...prev};
+        if (status === 'accepted') {
+          history.friends = prev.friends.map(friend =>
+            friend.id === id ? {...friend, status: 'accepted'} : friend);
+        } else {
+          history.friends = prev.friends.filter(friend => friend.id !== id);
+        }
+        return history;
+      });
+    };
+
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
     socket.on('chat_message', onChatMessage);
+    socket.on('change_friend_request_status', onChangeFriendRequestStatus)
     socket.on('error', onError);
     socket.on('connect_error', onConnectError);
 
@@ -79,6 +96,7 @@ export const WsProvider = ({children}) => {
       socket.off('connect', onConnect);
       socket.off('disconnect', onDisconnect);
       socket.off('chat_message', onChatMessage);
+      socket.off('change_friend_request_status', onChangeFriendRequestStatus)
       socket.off('error', onError);
       socket.off('connect_error', onConnectError);
     };
