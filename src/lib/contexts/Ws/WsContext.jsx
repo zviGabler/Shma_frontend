@@ -107,6 +107,7 @@ export const WsProvider = ({children}) => {
         const response = await api.getUserChatHistory();
         setChatsHistory(response.data.data);
         setIsChatHistoryLoaded(true);
+        console.log('chat history loaded', response.data.data)
       } catch (error) {
         console.log('error getting chat history', error)
       }

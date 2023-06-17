@@ -6,6 +6,7 @@ import Robot from '../../assets/robot.gif';
 import { v4 as uuidv4 } from 'uuid';
 import { AuthContext } from '../../lib/contexts/Auth/AuthContext';
 import { WsContext } from '../../lib/contexts/Ws/WsContext';
+import FriendRequests from './FriendRequests';
 
 export default function ChatContainer({ currentChat, socket, selectedTab, messages, setMessages}) {
   
@@ -58,7 +59,10 @@ export default function ChatContainer({ currentChat, socket, selectedTab, messag
             <h3>{currentChat.username || currentChat.name}</h3>
           </div>
         </div>
-        <Logout />
+        <dib className="buttons">
+          <FriendRequests />
+          <Logout />
+        </dib>
       </div>
       <div className='chat-messages'>
         {messages.map((message) => {
@@ -112,6 +116,10 @@ const Container = styled.div`
           color: white;
         }
       }
+    }
+    .buttons {
+      display: flex;
+      gap: 1rem;
     }
   }
   .chat-messages {
