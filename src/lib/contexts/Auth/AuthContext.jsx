@@ -50,10 +50,6 @@ export const AuthProvider = ({children}) => {
 
   const api = new Api(axiosInstance)
 
-  // some auth logic here  
-  // const login...
-  // const signup...
-
   const logout = async () => {
     console.log('logout')
     localStorage.removeItem(TOKEN_NAME)
@@ -61,9 +57,6 @@ export const AuthProvider = ({children}) => {
   }  
 
   useEffect(() => {
-    // some auth logic here on mount
-
-    // for now, just set user to the first user in the db
     const initAuth = async () => {
       setIsLoading(true)
       const token = getToken()
@@ -99,13 +92,16 @@ export const AuthProvider = ({children}) => {
   };
   }, [requestInterceptor, responseInterceptor]);
 
+  useEffect(() => {
+    if (!user.isLoggedIn) {
+      navigate('/login')
+    }
+  }, [user, navigate])
+
   const auth = {
     user,
     setUser,
     logout,
-    // signup,
-    // login,
-    // logout,
     api,
     isLoading
   }
