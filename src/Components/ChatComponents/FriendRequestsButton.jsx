@@ -2,9 +2,10 @@ import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components';
 import { FaUserFriends } from 'react-icons/fa';
 import { WsContext } from '../../lib/contexts/Ws/WsContext';
+import FriendRequestModal from './FriendRequestModal';
 
 export default function FriendRequests() {
-  const [isModalOpened, setIsModalOpened] = useState(false);
+  const [isModalOpened, setIsModalOpened] = useState(true);
   const { chatsHistory, isChatHistoryLoaded } = useContext(WsContext);
   const [pendingRequests, setPendingRequests] = useState([]);
 
@@ -15,10 +16,15 @@ export default function FriendRequests() {
   }, [isChatHistoryLoaded, chatsHistory.friends]);
 
   return (
-    <Button>
-      {isChatHistoryLoaded && pendingRequests.length > 0 && <Circle>{pendingRequests.length}</Circle>}
-      <FaUserFriends />
-    </Button>
+    <>
+    {isChatHistoryLoaded && <>
+      <Button onClick={() => setIsModalOpened(true)}>
+        {pendingRequests.length > 0 && <Circle>{pendingRequests.length}</Circle>}
+        <FaUserFriends />
+      </Button>
+      {isModalOpened && <FriendRequestModal {...{setIsModalOpened, pendingRequests, setPendingRequests}} />}
+    </>}
+    </>
   )
 }
 

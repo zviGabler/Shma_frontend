@@ -6,7 +6,7 @@ import Robot from '../../assets/robot.gif';
 import { v4 as uuidv4 } from 'uuid';
 import { AuthContext } from '../../lib/contexts/Auth/AuthContext';
 import { WsContext } from '../../lib/contexts/Ws/WsContext';
-import FriendRequests from './FriendRequests';
+import FriendRequests from './FriendRequestsButton';
 
 export default function ChatContainer({ currentChat, socket, selectedTab, messages, setMessages}) {
   
@@ -123,11 +123,12 @@ const Container = styled.div`
     }
   }
   .chat-messages {
-    padding: 1rem 2rem;
+    padding: 2rem 2rem;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 2rem;
     overflow: auto;
+    z-index: 1;
     &::-webkit-scrollbar {
       width: 0.2rem;
       &-thumb {
@@ -140,6 +141,7 @@ const Container = styled.div`
       display: flex;
       align-items: center;
       .content {
+        min-width: 10%;
         max-width: 40%;
         overflow-wrap: break-word;
         padding: 0.5rem ;
@@ -154,18 +156,21 @@ const Container = styled.div`
     .sended {
       justify-content: flex-end;
       .content {
+        position: relative;
         background-color: #31a377;
       }
     }
     .recieved {
       justify-content: flex-start;
       .content {
+        position: relative;
         background-color: #722994;
       }
     }
     .display-user {
-      position: relative;
-      top: -5rem;
+      position: absolute;
+      top: -1.5rem;
+      left: 0.5rem;
       color: pink;
     }
   }
