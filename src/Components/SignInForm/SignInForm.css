@@ -19,12 +19,14 @@
 }
 
 .form > button {
-    background-color: rgb(22, 22, 255);
-    border: 10px;
-    border-radius: 10px;
+    background-color: #431324;
+    width: fit-content;
     color: white;
-    padding: 3px 5px;
-    font-size: 20px;
+    border-radius: 10px;
+    height: 35px;
+    font-size: 18px;
+    padding: 4px;
+    text-align: center;
 }
 
 .btn-disabled {

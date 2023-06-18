@@ -32,8 +32,7 @@ function UserCard({ username, firstName, lastName, cardId, view=true }) {
   };
 
   const sendMessage = () => {
-    // redirect to send message to this person
-    console.log("Send Message");
+    navigate('../chat')
   };
 
   const changeFriendshipStatus = useCallback(async () => {
@@ -82,7 +81,7 @@ function UserCard({ username, firstName, lastName, cardId, view=true }) {
       {isNotWorking && (
         <div className="error-request-test">Error sending friend request.</div>
       )}
-      {(view && friendshipStatus!=="It's me!") && 
+      {(view) && 
       <button onClick={handleView}>View</button>}
     </div>
   );

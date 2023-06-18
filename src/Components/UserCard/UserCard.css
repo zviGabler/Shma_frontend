@@ -3,9 +3,8 @@
     height: 200px;
     margin: 15px;
     background-color: #ffffff34;
-    border: #431324 solid 3px;
     border-radius: 10px;
-    color: #4ff;
+    color: white;
     font-size: 25px;
     display: flex;
     flex-direction: column;
@@ -16,7 +15,7 @@
     margin: 0px auto;
     background-color: #431324;
     width: fit-content;
-    color: #4ff;
+    color: white;
     border-radius: 10px;
     height: 35px;
     font-size: 18px;

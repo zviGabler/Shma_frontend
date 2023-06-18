@@ -10,18 +10,23 @@ function UserInfo() {
   const [infoLastName, setInfoLastName] = useState("");
   const [infoID, setInfoID] = useState();
   const [friendsIds, setFriendsIds] = useState([]);
-  const { api } = useContext(AuthContext);
+  const [userID, setUserID] = useState(0);
+  const { user, api } = useContext(AuthContext);
 
   const setDetails = useCallback(async () => {
     if (infoUserName && infoUserName.length) {
       try {
-
         const response = await api.getUserByUserName(infoUserName);
 
         if (response.status === 200) {
           const { firstName, lastName, id } = response.data.data;
-          setInfoFirstName(firstName);
-          setInfoLastName(lastName);
+          if (id === userID) {
+            setInfoFirstName("Your");
+            setInfoLastName("");
+          } else {
+            setInfoFirstName(firstName);
+            setInfoLastName(lastName + "'s ");
+          }
           setInfoID(id);
         } else {
           console.log(response.data.message);
@@ -52,6 +57,10 @@ function UserInfo() {
     setArrayOfFriends();
   }, [setDetails, setArrayOfFriends]);
 
+  useEffect(() => {
+    setUserID(user.id);
+  }, [user]);
+
   return (
     <div className="user-info-page">
       <div className="user-info">
@@ -67,7 +76,7 @@ function UserInfo() {
       </div>
       <div className="users-friends">
         <div className="friends-title">
-          {infoFirstName} {infoLastName}'s Friends
+          {infoFirstName} {infoLastName}Friends
         </div>
         {friendsIds && friendsIds.length ? (
           <DisplayUsers idsArr={friendsIds} />
