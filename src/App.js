@@ -5,6 +5,7 @@ import { AuthProvider } from './lib/contexts/Auth/AuthContext';
 import { WsProvider } from './lib/contexts/Ws/WsContext';
 import UserInfo from './Components/UserInfo/UserInfo';
 import Chat from './Pages/Chat';
+import NotFound from './Pages/NotFound';
 
 function App() {
   return (
@@ -13,9 +14,11 @@ function App() {
         <WsProvider>
           <div className='App'>
             <Routes>
+              <Route path='/' element={<SignIn />} />
               <Route path='/login' element={<SignIn />} />
               <Route path='/user' element={<UserInfo />} />
               <Route path='/chat' element={<Chat />} />
+              <Route path='*' element={<NotFound />} />
             </Routes>
           </div>
         </WsProvider>
