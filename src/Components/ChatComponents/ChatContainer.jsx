@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext } from 'react';
+import React, { useState, useRef, useContext, useEffect } from 'react';
 import styled from 'styled-components';
 import ChatInput from './ChatInput';
 import Logout from './Logout';
@@ -14,7 +14,6 @@ const convertDate = (date) => {
 export default function ChatContainer({ currentChat, socket, selectedTab, messages, setMessages}) {
   
   const scrollRef = useRef();
-  const [arrivalMessage, setArrivalMessage] = useState(null);
   const { user } = useContext(AuthContext);
   const { setChatsHistory, chatsHistory } = useContext(WsContext);
 
@@ -25,11 +24,13 @@ export default function ChatContainer({ currentChat, socket, selectedTab, messag
       from: user.id,
       type: selectedTab === 'friends' ? 'private' : 'group',
       message,
+      createdAt: new Date().toISOString().slice(0, 19).replace('T', ' ')
     });
 
     const msgs = [...messages];
-    msgs.push({ fromSelf: true, message });
+    msgs.push({ fromSelf: true, message, createdAt: new Date().toISOString().slice(0, 19).replace('T', ' ') });
     setMessages(msgs);
+    console.log('messages', messages )
 
     setChatsHistory((prev) => {
       const history = { ...prev };
@@ -44,12 +45,18 @@ export default function ChatContainer({ currentChat, socket, selectedTab, messag
         fromSelf: true,
         message,
         type,
-        ...(type === 'group' && { from: currentChat.id })
+        ...(type === 'group' && { from: currentChat.id }),
+        createdAt: new Date().toISOString().slice(0, 19).replace('T', ' '),
+
       });
 
       return history;
     });
   };
+
+  useEffect(() => {
+    scrollRef?.current?.scrollIntoView();
+  }, [messages]);
   
   return (
     <Container>
@@ -132,6 +139,9 @@ const Container = styled.div`
         width: 0.1rem;
         border-radius: 1rem;
       }
+    }
+    ::-webkit-scrollbar-corner {
+      background-color: white;
     }
     .message {
       display: flex;
