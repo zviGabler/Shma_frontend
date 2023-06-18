@@ -45,7 +45,7 @@ export const WsProvider = ({children}) => {
     }
 
     const onChatMessage = (message) => {
-      const { type, message: text, from, to } = message;
+      const { type, message: text, from, to, createdAt } = message;
       setChatsHistory((prev) => {
         const history = {...prev};
 
@@ -62,7 +62,8 @@ export const WsProvider = ({children}) => {
           fromSelf: from === user.id,
           message: text,
           type,
-          ...(type === 'group' && { from })
+          ...(type === 'group' && { from }),
+          createdAt
         });
 
         return history;

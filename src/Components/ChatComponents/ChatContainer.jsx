@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext } from 'react';
+import React, { useState, useRef, useContext, useEffect } from 'react';
 import styled from 'styled-components';
 import ChatInput from './ChatInput';
 import Logout from './Logout';
@@ -11,9 +11,12 @@ import FriendRequests from './FriendRequestsButton';
 export default function ChatContainer({ currentChat, socket, selectedTab, messages, setMessages}) {
   
   const scrollRef = useRef();
-  const [arrivalMessage, setArrivalMessage] = useState(null);
   const { user } = useContext(AuthContext);
   const { setChatsHistory, chatsHistory } = useContext(WsContext);
+
+  const convertDate = (date) => {
+    return new Date(date).toDateString();
+  }
 
   const handleSendMsg = async (message) => {
     
@@ -22,10 +25,11 @@ export default function ChatContainer({ currentChat, socket, selectedTab, messag
       from: user.id,
       type: selectedTab === 'friends' ? 'private' : 'group',
       message,
+      createdAt: new Date().toISOString().slice(0, 19).replace('T', ' ')
     });
 
     const msgs = [...messages];
-    msgs.push({ fromSelf: true, message });
+    msgs.push({ fromSelf: true, message, createdAt: new Date().toISOString().slice(0, 19).replace('T', ' ') });
     setMessages(msgs);
 
     setChatsHistory((prev) => {
@@ -41,12 +45,17 @@ export default function ChatContainer({ currentChat, socket, selectedTab, messag
         fromSelf: true,
         message,
         type,
-        ...(type === 'group' && { from: currentChat.id })
+        ...(type === 'group' && { from: currentChat.id }),
+        createdAt: new Date().toISOString().slice(0, 19).replace('T', ' '),
       });
 
       return history;
     });
   };
+
+  useEffect(() => {
+    scrollRef?.current?.scrollIntoView();
+  }, [messages]);
   
   return (
     <Container>
@@ -74,9 +83,10 @@ export default function ChatContainer({ currentChat, socket, selectedTab, messag
                 }`}
               >
                 <div className='content '>
+                <span className='display-user'>{ !message.fromSelf ? (currentChat.username || message.userName )  
+                  : user.userName}</span> 
+                  <span className='display-date'>{convertDate(message.createdAt)}</span>
                   <p>{message.message}</p>
-                  <span className='display-user'>{ !message.fromSelf ? (currentChat.username || message.userName )  
-                  : user.userName}</span>
                 </div>
               </div>
             </div>
@@ -144,7 +154,9 @@ const Container = styled.div`
         min-width: 10%;
         max-width: 40%;
         overflow-wrap: break-word;
-        padding: 0.5rem ;
+        padding: 0 1rem;
+        padding-bottom: 1rem;
+        margin: 0;
         font-size: 1.1rem;
         border-radius: 1rem;
         color: #d1d1d1;
@@ -168,10 +180,20 @@ const Container = styled.div`
       }
     }
     .display-user {
-      position: absolute;
-      top: -1.5rem;
-      left: 0.5rem;
+      display: block;
+      position: relative;
       color: pink;
+      top: -1rem;
     }
+
+    .display-date {
+      font-size: 0.7rem;
+      position: relative;
+      top: -1.5rem;
+    }
+  }
+
+  p {
+    margin: 0;
   }
 `;
