@@ -17,7 +17,7 @@ export default class Api {
 
   checkFriendship = async (id1, id2) => await this.axios.get(`${endpoints.friendships}${endpoints.checkFriendship}/${id1}/${id2}`)
 
-  usersFromIds = async (ids) => await this.axios.post(`${endpoints.users}${endpoints.usersByIds}`, { ids })
+  usersFromIds = async (ids, userId) => await this.axios.post(`${endpoints.users}${endpoints.usersByIds}`, { ids, userId })
 
   getFriendsIds = async (id) => await this.axios.get(`${endpoints.friendships}${endpoints.friends}/${id}`)
 

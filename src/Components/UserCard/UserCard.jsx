@@ -4,7 +4,14 @@ import { AuthContext } from "../../lib/contexts/Auth/AuthContext";
 import { useNavigate } from "react-router";
 import { WsContext } from "../../lib/contexts/Ws/WsContext";
 
-function UserCard({ username, firstName, lastName, cardId, view=true }) {
+function UserCard({
+  username,
+  firstName,
+  lastName,
+  cardId,
+  relationship = false,
+  view = true,
+}) {
   const [friendshipStatus, setFriendshipStatus] = useState("no");
   const [isNotWorking, setIsNotWorking] = useState(false);
   const { user, api } = useContext(AuthContext);
@@ -15,11 +22,11 @@ function UserCard({ username, firstName, lastName, cardId, view=true }) {
   const handleView = () => {
     navigate(`../user?user-name=${username}`);
     window.location.reload();
-  }
+  };
 
   const sendFriendRequest = async () => {
     if (!cardId) return;
-    socket.emit('send_friend_request', { to: cardId }, (response) => {
+    socket.emit("send_friend_request", { to: cardId }, (response) => {
       if (response.status === 201) {
         setFriendshipStatus("pending");
       } else {
@@ -32,28 +39,23 @@ function UserCard({ username, firstName, lastName, cardId, view=true }) {
   };
 
   const sendMessage = () => {
-    navigate('../chat')
+    navigate("../chat");
   };
 
   const changeFriendshipStatus = useCallback(async () => {
     if (cardId && userID !== 0) {
       if (cardId === userID) {
-        setFriendshipStatus("It's me!")
-        return
+        setFriendshipStatus("It's me!");
+        return;
       }
 
-      const response = await api.checkFriendship(userID, cardId);
-
-      if (response.status === 200) {
-        const friendshipDetails = response.data.data;
-        if (friendshipDetails) {
-          setFriendshipStatus(friendshipDetails.status);
-        } else {
-          setFriendshipStatus("no");
-        }
+      if (relationship) {
+        setFriendshipStatus(relationship);
+      } else {
+        setFriendshipStatus("no");
       }
     }
-  }, [cardId, userID, api]);
+  }, [cardId, userID, api, relationship]);
 
   useEffect(() => {
     changeFriendshipStatus();
@@ -81,8 +83,7 @@ function UserCard({ username, firstName, lastName, cardId, view=true }) {
       {isNotWorking && (
         <div className="error-request-test">Error sending friend request.</div>
       )}
-      {(view) && 
-      <button onClick={handleView}>View</button>}
+      {view && <button onClick={handleView}>View</button>}
     </div>
   );
 }
