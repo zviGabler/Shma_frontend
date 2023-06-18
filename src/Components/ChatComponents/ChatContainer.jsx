@@ -7,6 +7,10 @@ import { v4 as uuidv4 } from 'uuid';
 import { AuthContext } from '../../lib/contexts/Auth/AuthContext';
 import { WsContext } from '../../lib/contexts/Ws/WsContext';
 
+const convertDate = (date) => {
+  return new Date(date).toDateString();
+}
+
 export default function ChatContainer({ currentChat, socket, selectedTab, messages, setMessages}) {
   
   const scrollRef = useRef();
@@ -70,9 +74,10 @@ export default function ChatContainer({ currentChat, socket, selectedTab, messag
                 }`}
               >
                 <div className='content '>
+                <span className='display-user'>{ !message.fromSelf ? (currentChat.username || message.userName )  
+                  : user.userName}</span> 
+                  <span className='display-date'>{convertDate(message.createdAt)}</span>
                   <p>{message.message}</p>
-                  <span className='display-user'>{ !message.fromSelf ? (currentChat.username || message.userName )  
-                  : user.userName}</span>
                 </div>
               </div>
             </div>
@@ -157,8 +162,13 @@ const Container = styled.div`
     }
     .display-user {
       position: relative;
-      top: -5rem;
+      ${'' /* top: -5rem; */}
       color: pink;
+    }
+
+    .display-date {
+      display: block;
+      font-size: 0.8rem;
     }
   }
 `;

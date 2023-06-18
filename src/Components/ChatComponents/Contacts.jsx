@@ -56,9 +56,6 @@ export default function Contacts({ contacts, changeChat, setMessages, chatsHisto
           </div>
           <div className='current-user'>
             {isChatHistoryLoaded && <>
-              <div className='avatar'>
-                <img src={StarLogo} alt='avatar' />
-              </div>
               <div className='username'>
                 <h2>{user.userName}</h2>
               </div>
@@ -152,13 +149,13 @@ const Container = styled.div`
         color: white;
       }
     }
-    @media screen and (min-width: 720px) and (max-width: 1080px) {
+    ${'' /* @media screen and (min-width: 720px) and (max-width: 1080px) {
       gap: 0.5rem;
       .username {
         h2 {
           font-size: 0.5rem;
         }
       }
-    }
+    } */}
   }
 `;
