@@ -2,13 +2,14 @@ import React, { useEffect, useState, useCallback, useContext } from "react";
 import "./UserCard.css";
 import { AuthContext } from "../../lib/contexts/Auth/AuthContext";
 import { useNavigate } from "react-router";
+import { WsContext } from "../../lib/contexts/Ws/WsContext";
 
 function UserCard({ username, firstName, lastName, cardId, view=true }) {
   const [friendshipStatus, setFriendshipStatus] = useState("no");
   const [isNotWorking, setIsNotWorking] = useState(false);
-  const { user } = useContext(AuthContext);
+  const { user, api } = useContext(AuthContext);
+  const { socket, chatsHistory } = useContext(WsContext);
   const [userID, setUserID] = useState(0);
-  const { api } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleView = () => {
@@ -17,11 +18,9 @@ function UserCard({ username, firstName, lastName, cardId, view=true }) {
   }
 
   const sendFriendRequest = async () => {
-    if (cardId) {
-
-      const response = await api.friendRequest(userID, cardId);
-      
-      if (response.status === 200) {
+    if (!cardId) return;
+    socket.emit('send_friend_request', { to: cardId }, (response) => {
+      if (response.status === 201) {
         setFriendshipStatus("pending");
       } else {
         setIsNotWorking(true);
@@ -29,7 +28,7 @@ function UserCard({ username, firstName, lastName, cardId, view=true }) {
           setIsNotWorking(false);
         }, 10000);
       }
-    }
+    });
   };
 
   const sendMessage = () => {

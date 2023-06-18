@@ -85,10 +85,25 @@ export const WsProvider = ({children}) => {
       });
     };
 
+    const onSendFriendRequest = (data) => {
+      const { toUser, fromUser, fromId } = data;
+      const friend = fromUser.id === user.id ? toUser : fromUser
+      setChatsHistory((prev) => {
+        const history = {...prev};
+        history.friends.push({
+          ...friend,
+          status: 'pending',
+          fromId
+        });
+        return history;
+      })
+    };
+
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
     socket.on('chat_message', onChatMessage);
     socket.on('change_friend_request_status', onChangeFriendRequestStatus)
+    socket.on('send_friend_request', onSendFriendRequest);
     socket.on('error', onError);
     socket.on('connect_error', onConnectError);
 
@@ -97,6 +112,7 @@ export const WsProvider = ({children}) => {
       socket.off('disconnect', onDisconnect);
       socket.off('chat_message', onChatMessage);
       socket.off('change_friend_request_status', onChangeFriendRequestStatus)
+      socket.off('send_friend_request', onSendFriendRequest);
       socket.off('error', onError);
       socket.off('connect_error', onConnectError);
     };

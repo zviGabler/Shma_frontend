@@ -11,13 +11,12 @@ export default function FriendRequests() {
   const { chatsHistory, isChatHistoryLoaded } = useContext(WsContext);
   const [pendingRequests, setPendingRequests] = useState([]);
   const [incomingRequestsNumber, setIncomingRequestsNumber] = useState(0);
-  console.log('chatsHistory', chatsHistory);
 
   useEffect(() => {
     if (isChatHistoryLoaded) {
       setPendingRequests(chatsHistory.friends.filter(friend => friend.status === 'pending'));
     }
-  }, [isChatHistoryLoaded, chatsHistory.friends]);
+  }, [isChatHistoryLoaded, chatsHistory]);
 
   useEffect(() => {
     setIncomingRequestsNumber(pendingRequests.filter(friend => friend.fromId !== user.id).length)
